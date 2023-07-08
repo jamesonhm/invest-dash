@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 
+from site_ifaces import CrawlSite3
+
+
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
     Chrome/84.0.4147.105 Safari/537.36'}
@@ -18,4 +21,7 @@ volume = soup.find("fin-streamer", {"data-field": "regularMarketVolume"}).text#,
 
 print(close_price)
 print(volume)
+
+test = CrawlSite3("https://finance.yahoo.com/quote/{}", "fin-streamer", {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)"})
+print(test.get_url("nke"))
 
