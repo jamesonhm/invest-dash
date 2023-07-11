@@ -1,7 +1,10 @@
+import sys
+sys.path.append("..")
+
 import requests
 import pytest
 
-import site_ifaces
+from crawler.site_ifaces import crawlsites
 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
@@ -9,7 +12,7 @@ headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
 
 symbols = ["NKE"]
 
-args = [(crawlsite, "NKE") for crawlsite in site_ifaces.crawlsites]
+args = [(crawlsite, "NKE") for crawlsite in crawlsites]
 @pytest.mark.parametrize("crawlsite, symbol", args)
 def test_response(crawlsite, symbol):
     page = requests.get(crawlsite.get_url(symbol), headers=headers)

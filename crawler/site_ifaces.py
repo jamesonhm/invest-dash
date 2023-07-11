@@ -31,4 +31,10 @@ yahoo = CrawlSite("https://finance.yahoo.com/quote/{}",
                   "fin-streamer", 
                   {"data-field": "regularMarketVolume"})
 
-crawlsites= [yahoo]
+fid = CrawlSite("https://digital.fidelity.com/prgw/digital/research/quote/dashboard/summary?symbol={}",
+                "div", 
+                {"class":"nre-quick-quote-price"},
+                "div", 
+                {"class": "col-left ng-star-inserted", "nre-cy": "nre-quick-quote-volume-value"})
+
+crawlsites= [yahoo, fid]
