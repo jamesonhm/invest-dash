@@ -11,6 +11,7 @@ from dataclasses import dataclass
 # https://seekingalpha.com/symbol/NKE
 # https://www.zacks.com/stock/quote/NKE
 # https://www.tradingview.com/chart/?symbol=NKE
+# https://finviz.com/quote.ashx?t=NKE&p=d
 
 class CrawlSite(ABC):
     @abstractmethod
