@@ -13,36 +13,22 @@ from dataclasses import dataclass
 # https://www.tradingview.com/chart/?symbol=NKE
 # https://finviz.com/quote.ashx?t=NKE&p=d
 
-class CrawlSite(ABC):
-    @abstractmethod
-    def get_symbol_url(self, symbol: str) -> str:
-        pass
-
-    @abstractmethod
-    def get_closeprice_tagname(self):
-        pass
-
-    @abstractmethod
-    def get_closeprice_tagattrs(self):
-        pass
-
-
-################## OR ######################
-
-class CrawlSite2:
-    def __init__(self, url_fstr: str, close_tag: str, close_tagattr: dict, vol_tag: str, vol_tagattrs: dict):
-        self.url_ftstr = url_fstr
-        self.close_tag = close_tag
-        ...
-
-    
-################# OR ############################
 
 @dataclass
-class CrawlSite3:
+class CrawlSite:
     url_fstr: str
     close_tag: str
     close_attrs: dict
+    vol_tag: str
+    vol_attrs: dict
 
     def get_url(self, symbol: str) -> str:
         return self.url_fstr.format(symbol)
+
+yahoo = CrawlSite("https://finance.yahoo.com/quote/{}",
+                  "fin-streamer", 
+                  {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)"},
+                  "fin-streamer", 
+                  {"data-field": "regularMarketVolume"})
+
+crawlsites= [yahoo]
