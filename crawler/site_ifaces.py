@@ -1,15 +1,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from bs4 import BeautifulSoup
 
 
 # https://finance.yahoo.com/quote/nke
-# https://digital.fidelity.com/prgw/digital/research/quote/dashboard/summary?symbol=NKE
+# X https://digital.fidelity.com/prgw/digital/research/quote/dashboard/summary?symbol=NKE
 # https://www.investopedia.com/markets/quote?tvwidgetsymbol=NKE
 # https://www.bloomberg.com/quote/NKE:US
 # https://www.marketwatch.com/investing/stock/nke
 # https://www.morningstar.com/stocks/xnys/nke/quote
-# https://seekingalpha.com/symbol/NKE
-# https://www.zacks.com/stock/quote/NKE
+# M https://seekingalpha.com/symbol/NKE
+# M https://www.zacks.com/stock/quote/NKE
 # https://www.tradingview.com/chart/?symbol=NKE
 # https://finviz.com/quote.ashx?t=NKE&p=d
 
@@ -19,22 +20,27 @@ class CrawlSite:
     url_fstr: str
     close_tag: str
     close_attrs: dict
-    vol_tag: str
-    vol_attrs: dict
+    # vol_tag: str
+    # vol_attrs: dict
 
     def get_url(self, symbol: str) -> str:
         return self.url_fstr.format(symbol)
+    
+    def get_close(self, soup: BeautifulSoup) -> float:
+        close = soup.find(self.close_tag, self.close_attrs).text
+        try:
+            return float(close)
+        except:
+            return 0.0
 
 yahoo = CrawlSite("https://finance.yahoo.com/quote/{}",
-                  "fin-streamer", 
-                  {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)"},
-                  "fin-streamer", 
-                  {"data-field": "regularMarketVolume"})
+                  "td", 
+                  {"class":"Ta(end) Fw(600) Lh(14px)", "data-test":"PREV_CLOSE-value"}, 
+                )
 
-fid = CrawlSite("https://digital.fidelity.com/prgw/digital/research/quote/dashboard/summary?symbol={}",
-                "div", 
-                {"class":"nre-quick-quote-price"},
-                "div", 
-                {"class": "col-left ng-star-inserted", "nre-cy": "nre-quick-quote-volume-value"})
+mstar = CrawlSite("https://www.morningstar.com/stocks/xnys/{}/quote",
+                "span", 
+                {"class": "mdc-data-point mdc-data-point--number"},
+                )
 
-crawlsites= [yahoo, fid]
+crawlsites= [yahoo, mstar]
