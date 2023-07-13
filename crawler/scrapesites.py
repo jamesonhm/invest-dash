@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 
 
 @dataclass
-class CrawlSite:
+class ScrapeSite:
     url_fstr: str
     close_tag: str
     close_attrs: dict
@@ -33,14 +33,14 @@ class CrawlSite:
         except:
             return 0.0
 
-yahoo = CrawlSite("https://finance.yahoo.com/quote/{}",
+yahoo = ScrapeSite("https://finance.yahoo.com/quote/{}",
                   "td", 
                   {"class":"Ta(end) Fw(600) Lh(14px)", "data-test":"PREV_CLOSE-value"}, 
                 )
 
-mstar = CrawlSite("https://www.morningstar.com/stocks/xnys/{}/quote",
+mstar = ScrapeSite("https://www.morningstar.com/stocks/xnys/{}/quote",
                 "span", 
                 {"class": "mdc-data-point mdc-data-point--number"},
                 )
 
-crawlsites= [yahoo, mstar]
+scrapesites= [yahoo, mstar]

@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-from site_ifaces import CrawlSite
+from crawler.scrapesites import ScrapeSite
 
 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
@@ -27,6 +27,6 @@ for div in tag:
 # print(close_price)
 # print(volume)
 
-# test = CrawlSite("https://finance.yahoo.com/quote/{}", "fin-streamer", {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)"})
+# test = ScrapeSite("https://finance.yahoo.com/quote/{}", "fin-streamer", {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)"})
 # print(test.get_url("nke"))
 
