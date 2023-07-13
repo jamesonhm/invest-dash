@@ -15,32 +15,46 @@ from bs4 import BeautifulSoup
 # https://finviz.com/quote.ashx?t=NKE&p=d
 
 
-@dataclass
-class ScrapeSite:
-    url_fstr: str
-    close_tag: str
-    close_attrs: dict
-    # vol_tag: str
-    # vol_attrs: dict
+class ScrapeSite(ABC):
+    def __init__(self, url_fstr: str):
+        self.url_fstr = url_fstr
+    
+    @abstractmethod
+    def get_url(self, symbol: str) -> str:
+        pass
+    
+    @abstractmethod
+    def get_close(self, soup: BeautifulSoup) -> float:
+        pass
+
+
+class ScrapeSite_Yahoo(ScrapeSite):
 
     def get_url(self, symbol: str) -> str:
         return self.url_fstr.format(symbol)
     
     def get_close(self, soup: BeautifulSoup) -> float:
-        close = soup.find(self.close_tag, self.close_attrs).text
+        close = soup.find("fin-streamer", {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)", "data-test":"qsp-price"}).text
         try:
             return float(close)
         except:
             return 0.0
 
-yahoo = ScrapeSite("https://finance.yahoo.com/quote/{}",
-                  "td", 
-                  {"class":"Ta(end) Fw(600) Lh(14px)", "data-test":"PREV_CLOSE-value"}, 
-                )
 
-mstar = ScrapeSite("https://www.morningstar.com/stocks/xnys/{}/quote",
-                "span", 
-                {"class": "mdc-data-point mdc-data-point--number"},
-                )
+class ScrapeSite_Morningstar(ScrapeSite):
+
+    def get_url(self, symbol: str) -> str:
+        return self.url_fstr.format(symbol)
+    
+    def get_close(self, soup: BeautifulSoup) -> float:
+        close = soup.find("ul", {"class":"stock__quote-content stock__quote-content--overview"}).find_all('span')[2].text
+        try:
+            return float(close)
+        except:
+            return 0.0
+
+yahoo = ScrapeSite_Yahoo("https://finance.yahoo.com/quote/{}")
+
+mstar = ScrapeSite_Morningstar("https://www.morningstar.com/stocks/xnys/{}/quote")
 
 scrapesites= [yahoo, mstar]

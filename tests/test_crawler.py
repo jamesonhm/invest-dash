@@ -22,7 +22,7 @@ resp_args = [(scrapesite, "NKE") for scrapesite in scrapesites]
 def test_response(page: requests.Response) -> None:
     assert page.status_code == 200
 
-close_args = [(scrapesite, BeautifulSoup(page.text, 'html.parser'), 107.39) for scrapesite, page in zip(scrapesites, pages)]
+close_args = [(scrapesite, BeautifulSoup(page.text, 'html.parser'), 107.76) for scrapesite, page in zip(scrapesites, pages)]
 
 @pytest.mark.parametrize("scrapesite, soup, static_close", close_args)
 def test_prev_close(scrapesite: ScrapeSite, soup: BeautifulSoup, static_close: float) -> None:

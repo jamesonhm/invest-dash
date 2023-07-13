@@ -1,14 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 
-from crawler.scrapesites import ScrapeSite
+# from .scrapesites import ScrapeSite
 
 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
     Chrome/84.0.4147.105 Safari/537.36'}
 
-url = "https://www.thestreet.com/quote/NKE"
+url = "https://www.morningstar.com/stocks/xnys/nke/quote"
 page = requests.get(url, headers=headers)
 
 print(page.status_code)
@@ -17,10 +17,10 @@ soup = BeautifulSoup(page.text, 'html.parser')
 # print(soup)
 # print("**************************************************")
 
-tag = soup.find_all("div", {"class":"qmod-data-point qmod-textr"})#.text#.find_all('div')
-# print(tag)
-for div in tag:
-    print(div)
+tag = soup.find("ul", {"class":"stock__quote-content stock__quote-content--overview"}).find_all('span')[2].text
+print(tag)
+# for div in tag:
+#     print(div)
 # volume = soup.find_all("fin-streamer")#, {"class":"Ta(end) Fw(600) Lh(14px)"}).text
 # volume = soup.find("fin-streamer", {"data-field": "regularMarketVolume"}).text#, {"class":"Ta(end) Fw(600) Lh(14px)"}).text
 

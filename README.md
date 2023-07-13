@@ -15,3 +15,4 @@ Frontend
 - use HTMX?
 - symbol-score tiles
 - click-open chart? for timeseries view
+
