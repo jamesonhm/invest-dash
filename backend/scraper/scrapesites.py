@@ -19,9 +19,8 @@ class ScrapeSite(ABC):
     def __init__(self, url_fstr: str):
         self.url_fstr = url_fstr
     
-    @abstractmethod
     def get_url(self, symbol: str) -> str:
-        pass
+        return self.url_fstr.format(symbol)
     
     @abstractmethod
     def get_close(self, soup: BeautifulSoup) -> float:
@@ -29,9 +28,6 @@ class ScrapeSite(ABC):
 
 
 class ScrapeSite_Yahoo(ScrapeSite):
-
-    def get_url(self, symbol: str) -> str:
-        return self.url_fstr.format(symbol)
     
     def get_close(self, soup: BeautifulSoup) -> float:
         close = soup.find("fin-streamer", {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)", "data-test":"qsp-price"}).text
@@ -43,9 +39,6 @@ class ScrapeSite_Yahoo(ScrapeSite):
 
 class ScrapeSite_Morningstar(ScrapeSite):
 
-    def get_url(self, symbol: str) -> str:
-        return self.url_fstr.format(symbol)
-    
     def get_close(self, soup: BeautifulSoup) -> float:
         close = soup.find("ul", {"class":"stock__quote-content stock__quote-content--overview"}).find_all('span')[2].text
         try:
