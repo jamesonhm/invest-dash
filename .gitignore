@@ -11,6 +11,7 @@ scraper.db
 geckodriver*
 cronlog.txt
 top_*_symbols.csv
+sandbox.py
 
 # Local History for Visual Studio Code
 .history/
