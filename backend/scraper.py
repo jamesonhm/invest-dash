@@ -17,22 +17,27 @@ headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
 today = date.today()
 create_eod_table()
 
-for ticker in tickers:
-    # currently only works with yahoo
-    site = scrapesites[0]
-    url = site.get_url(ticker)
+def scrape():
+    for ticker in tickers:
+        # currently only works with yahoo
+        site = scrapesites[0]
+        url = site.get_url(ticker)
 
-    page = requests.get(url, headers=headers)
-    if page.status_code != 200:
-        print(f"{today}: request failed for page {url} with status code {page.status_code}")
-        continue
-    soup = BeautifulSoup(page.text, 'html.parser')
-    close = site.get_close(soup)
-    if close <= 0.0:
-        print(f"{today}: Bad close price found for {ticker}: {close}")
-        continue
-    add_ticker_eod(today, ticker, close)
+        page = requests.get(url, headers=headers)
+        if page.status_code != 200:
+            print(f"{today}: request failed for page {url} with status code {page.status_code}")
+            continue
+        soup = BeautifulSoup(page.text, 'html.parser')
+        close = site.get_close(soup)
+        if close <= 0.0:
+            print(f"{today}: Bad close price found for {ticker}: {close}")
+            continue
+        add_ticker_eod(today, ticker, close)
+        
+        sleep_time = random.randrange(1, 10)
+        print(f"sleep: {sleep_time}")
+        time.sleep(sleep_time)
+
+if __name__ == "__main__":
+    scrape()
     
-    sleep_time = random.randrange(1, 10)
-    print(f"sleep: {sleep_time}")
-    time.sleep(sleep_time)
