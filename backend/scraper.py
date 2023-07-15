@@ -2,13 +2,19 @@ import random
 import time
 import requests
 from bs4 import BeautifulSoup
+from datetime import date
+import sqlite3
 
 from scrapesites import scrapesites
+from db import con
+
 symbols = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
     Chrome/84.0.4147.105 Safari/537.36'}
+
+today = date.today()
 
 for symbol in symbols:
     # site = random.choice(scrapesites)
@@ -20,6 +26,12 @@ for symbol in symbols:
     soup = BeautifulSoup(page.text, 'html.parser')
     close = site.get_close(soup)
     print(f"Close: {close}")
+    args = (today, symbol, close)
+    try:
+        with con:
+            con.execute("INSERT INTO ticker_eod (date, ticker, close) VALUES (?, ?, ?)", args)
+    except sqlite3.DatabaseError:
+            print(f"{today}: unable to add close data for ticker {symbol}")
     sleep_time = random.randrange(1, 10)
     print(f"sleep: {sleep_time}")
     time.sleep(sleep_time)
