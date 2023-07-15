@@ -29,11 +29,12 @@ def get_recent_eods():
     except sqlite3.DatabaseError:
         raise
 
-# create_eod_table()
+if __name__ == "__main__":
+    create_eod_table()
 
-print(con.execute("SELECT name FROM sqlite_master").fetchall())
-assert 'ticker_eod' in con.execute("SELECT name FROM sqlite_master WHERE name = 'ticker_eod'").fetchall()[0]
+    print(con.execute("SELECT name FROM sqlite_master").fetchall())
+    assert 'ticker_eod' in con.execute("SELECT name FROM sqlite_master WHERE name = 'ticker_eod'").fetchall()[0]
 
-today_eod = get_recent_eods()
-for row in today_eod:
-    print(row)
+    today_eod = get_recent_eods()
+    for row in today_eod:
+        print(row)

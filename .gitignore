@@ -1,11 +1,6 @@
-token.json
-credentials.json
 .vscode/
-TODO.txt
-periodic_data/
-test_table.html
-tests/test.py
-sym_hist.db
+*.db
+scraper.db
 .dockerignore
 .vscode/*
 !.vscode/settings.json
