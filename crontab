@@ -1,1 +1,2 @@
-*/5 * * * * python /invest_dash/backend/crontest.py >> /cronlog.txt
+*/1 * * * * python3 /app/backend/crontest.py > /proc/1/fd/1 2>/proc/1/fd/2
+# new line required
