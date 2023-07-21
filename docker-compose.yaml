@@ -1,8 +1,9 @@
 version: '3'
 services:
   scraper:
-    image: invest-dash
-    command: ["cron -f"]
+    build: .
+    container_name: invest_dash
+    command: ["cron", "-f"]
     volumes:
       - invest_dash:/app
 

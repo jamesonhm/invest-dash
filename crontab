@@ -1,2 +1,2 @@
-*/1 * * * * python3 /app/backend/crontest.py > /proc/1/fd/1 2>/proc/1/fd/2
+0 16 * * 1-5 python3 /app/backend/scraper.py > /proc/1/fd/1 2>/proc/1/fd/2
 # new line required
