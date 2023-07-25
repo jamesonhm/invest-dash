@@ -14,15 +14,24 @@ import datetime
 
 TICKER_EOD = "ticker_eod"
 
-con = sqlite3.connect("../scraper.db")
+con = sqlite3.connect("../scraper.db", check_same_thread=False)
+with con:
+    con.execute(f"""
+                CREATE TABLE IF NOT EXISTS {TICKER_EOD} (
+                    date TEXT, 
+                    ticker TEXT, 
+                    close NUMERIC, 
+                    UNIQUE(date, ticker)
+                )
+            """)
+    
 
-
-def create_eod_table():
-    try:
-        with con:
-            con.execute(f"CREATE TABLE {TICKER_EOD}(date TEXT, ticker TEXT, close NUMERIC, UNIQUE(date, ticker))")
-    except sqlite3.OperationalError:
-        print("ticker_eod already exists")
+# def create_eod_table():
+#     try:
+#         with con:
+#             con.execute(f"CREATE TABLE {TICKER_EOD}(date TEXT, ticker TEXT, close NUMERIC, UNIQUE(date, ticker))")
+#     except sqlite3.OperationalError:
+#         print("ticker_eod already exists")
 
 def drop_eod_table():
     try:
@@ -41,7 +50,6 @@ def add_ticker_eod(date: datetime.date, ticker: str, close: float):
         print(f"{date}: unable to add close data for ticker {ticker}, close: {close}")
         raise
 
-
 def get_recent_eods():
     try:
         with con:
@@ -50,9 +58,18 @@ def get_recent_eods():
     except sqlite3.DatabaseError:
         raise
 
+def get_ticker_eods():
+    try:
+        with con:
+            result = con.execute(f"SELECT date, ticker, close FROM {TICKER_EOD}").fetchall()
+            return result
+    except sqlite3.DatabaseError:
+        raise
+
+
 if __name__ == "__main__":
     # drop_eod_table()
-    create_eod_table()
+    # create_eod_table()
 
     tablenames = con.execute("SELECT name FROM sqlite_master").fetchall()
     tables = [tablename[0] for tablename in tablenames]
