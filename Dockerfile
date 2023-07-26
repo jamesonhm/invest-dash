@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
-# ENV PYTHONPATH "${PYTHONPATH}:/app/src"
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 RUN /usr/bin/crontab /etc/cron.d/crontab
 

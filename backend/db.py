@@ -8,13 +8,19 @@
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base = declarative_base()
 
-
-import sqlite3
 import datetime
+import json
+import sqlite3
+
 
 TICKER_EOD = "ticker_eod"
 
 con = sqlite3.connect("../scraper.db", check_same_thread=False)
+def dict_factory(cursor, row):
+    fields = [column[0] for column in cursor.description]
+    return {key: value for key, value in zip(fields, row)}
+con.row_factory = dict_factory
+
 with con:
     con.execute(f"""
                 CREATE TABLE IF NOT EXISTS {TICKER_EOD} (
@@ -61,20 +67,47 @@ def get_recent_eods():
 def get_ticker_eods():
     try:
         with con:
-            result = con.execute(f"SELECT date, ticker, close FROM {TICKER_EOD}").fetchall()
+            result = con.execute(f"""SELECT json_group_array(
+                json_object(
+                    'date', date, 
+                    'ticker', ticker, 
+                    'close', close
+                    )
+                ) FROM {TICKER_EOD}
+            """).fetchall()
             return result
     except sqlite3.DatabaseError:
         raise
 
+def get_ticker_eods2():
+    try:
+        with con:
+            result = con.execute(f"""
+            SELECT 
+                date, 
+                ticker, 
+                close
+            FROM 
+                {TICKER_EOD}
+            """).fetchall()
+            return result
+    except sqlite3.DatabaseError:
+        raise
 
 if __name__ == "__main__":
     # drop_eod_table()
     # create_eod_table()
 
     tablenames = con.execute("SELECT name FROM sqlite_master").fetchall()
-    tables = [tablename[0] for tablename in tablenames]
-    assert f"{TICKER_EOD}" in tables
+    print(tablenames)
+    if len(tablenames):
+        assert f"{TICKER_EOD}" in [table["name"] for table in tablenames]
+    else:
+        print("No tables exist")
 
-    today_eod = get_recent_eods()
-    for row in today_eod:
-        print(row)
+    eods = get_ticker_eods2()
+    print(eods)
+    print(type(eods))
+    # # print(today_eod[0][0])
+    # for row in today_eod[0]:
+    #     print(row)

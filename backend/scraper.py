@@ -6,7 +6,7 @@ from datetime import date
 import sqlite3
 
 from scrapesites import scrapesites
-from db import create_eod_table, add_ticker_eod
+from db import add_ticker_eod
 
 tickers = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
 
@@ -15,7 +15,6 @@ headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Chrome/84.0.4147.105 Safari/537.36'}
 
 today = date.today()
-create_eod_table()
 
 def scrape():
     for ticker in tickers:

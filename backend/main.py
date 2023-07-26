@@ -1,16 +1,31 @@
 from fastapi import FastAPI
 
-from .db import get_ticker_eods
+from . import db
 
 app = FastAPI()
 
 # test comm
 
 @app.get("/")
-async def root():
+def root():
     return {"message": "Hello World"}
 
 @app.get("/tickers")
 def get_tickers(limit: int = 30):
-    tickers = get_ticker_eods()
-    return tickers
+    with db.con as con:
+        result = con.execute(f"""
+        SELECT 
+            date, 
+            ticker, 
+            close
+        FROM 
+            ticker_eod
+        """).fetchall()
+        print(result)
+        return result
+
+@app.get("/tickers2")
+def get_tickers(limit: int = 30):
+    result = db.get_ticker_eods2()
+    print(result)
+    return result
