@@ -15,10 +15,12 @@ import sqlite3
 
 TICKER_EOD = "ticker_eod"
 
-con = sqlite3.connect("../scraper.db", check_same_thread=False)
+con = sqlite3.connect("./scraper.db", check_same_thread=False)
+
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
     return {key: value for key, value in zip(fields, row)}
+
 con.row_factory = dict_factory
 
 with con:
@@ -67,21 +69,6 @@ def get_recent_eods():
 def get_ticker_eods():
     try:
         with con:
-            result = con.execute(f"""SELECT json_group_array(
-                json_object(
-                    'date', date, 
-                    'ticker', ticker, 
-                    'close', close
-                    )
-                ) FROM {TICKER_EOD}
-            """).fetchall()
-            return result
-    except sqlite3.DatabaseError:
-        raise
-
-def get_ticker_eods2():
-    try:
-        with con:
             result = con.execute(f"""
             SELECT 
                 date, 
@@ -94,6 +81,23 @@ def get_ticker_eods2():
     except sqlite3.DatabaseError:
         raise
 
+# def get_ticker_eods():
+#     try:
+#         with con:
+#             result = con.execute(f"""SELECT json_group_array(
+#                 json_object(
+#                     'date', date, 
+#                     'ticker', ticker, 
+#                     'close', close
+#                     )
+#                 ) FROM {TICKER_EOD}
+#             """).fetchall()
+#             return result
+#     except sqlite3.DatabaseError:
+#         raise
+
+
+
 if __name__ == "__main__":
     # drop_eod_table()
     # create_eod_table()
@@ -105,7 +109,7 @@ if __name__ == "__main__":
     else:
         print("No tables exist")
 
-    eods = get_ticker_eods2()
+    eods = get_ticker_eods()
     print(eods)
     print(type(eods))
     # # print(today_eod[0][0])
