@@ -10,7 +10,7 @@ scraper.db
 !.vscode/*.code-snippets
 geckodriver*
 cronlog.txt
-top_*_symbols.csv
+# top_*_symbols.csv
 sandbox.py
 
 # Local History for Visual Studio Code
