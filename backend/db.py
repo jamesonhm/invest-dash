@@ -9,7 +9,6 @@
 # Base = declarative_base()
 
 import datetime
-import json
 import sqlite3
 
 
@@ -76,6 +75,9 @@ def get_ticker_eods():
                 close
             FROM 
                 {TICKER_EOD}
+            ORDER BY 
+                date, 
+                ticker
             """).fetchall()
             return result
     except sqlite3.DatabaseError:

@@ -5,7 +5,7 @@ services:
     # container_name: invest_dash
     command: ["cron", "-f"]
     volumes:
-      - .:/app
+      - .:/invest_dash
 
   app:
     build: .
@@ -14,7 +14,7 @@ services:
     ports: 
       - 8080:8080
     volumes: 
-      - .:/app
+      - .:/invest_dash
 
 volumes:
   .:

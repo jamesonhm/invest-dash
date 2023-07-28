@@ -1,14 +1,17 @@
-import random
-import time
-import requests
 from bs4 import BeautifulSoup
+import csv
 from datetime import date
-import sqlite3
+import random
+import requests
+import time
 
 from scrapesites import scrapesites
 from db import add_ticker_eod
 
-tickers = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
+# tickers = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
+with open('/invest_dash/top_100_symbols.csv', newline='') as f:
+    reader = csv.reader(f)
+    tickers = [row[0] for row in reader]
 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
@@ -31,6 +34,7 @@ def scrape():
             if close <= 0.0:
                 print(f"{today}: Bad close price found for {ticker}: {close}")
                 continue
+            print(f"{today}: Inserting EOD close for {ticker}, value: {close}")
             add_ticker_eod(today, ticker, close)
         
         sleep_time = random.randrange(1, 10)
