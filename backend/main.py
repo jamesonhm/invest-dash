@@ -8,10 +8,9 @@ from . import crontest
 logger = logging.getLogger(__name__)
 app = FastAPI()
 
-# test comm
 
 @app.on_event("startup")
-def start_scraper():
+def startup():
     scheduler = BackgroundScheduler()
     scheduler.add_job(crontest.main, 'cron', minute='*/1')
     scheduler.start()
@@ -20,10 +19,9 @@ def start_scraper():
 def root():
     return {"message": "Hello World"}
 
-
-
 @app.get("/tickers")
 def get_tickers(limit: int = 30):
     result = db.get_ticker_eods()
     print(result)
     return result
+

@@ -1,20 +1,10 @@
-# from sqlalchemy import create_engine
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import sessionmaker
-
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./scraper.db"
-
-# engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-# Base = declarative_base()
-
 import datetime
 import sqlite3
-
 
 TICKER_EOD = "ticker_eod"
 
 con = sqlite3.connect("./scraper.db", check_same_thread=False)
+
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
