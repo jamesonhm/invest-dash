@@ -2,4 +2,5 @@ beautifulsoup4==4.10.0
 pytest==7.0.0
 requests==2.22.0
 fastapi[all]
+apscheduler==3.10.4
 # SQLAlchemy==2.0.18

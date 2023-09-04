@@ -1,20 +1,7 @@
 version: '3'
 services:
-  scraper:
-    build: .
-    # container_name: invest_dash
-    command: ["cron", "-f"]
-    volumes:
-      - .:/invest_dash
-
   app:
     build: .
-    # container_name: invest_dash
     command: uvicorn backend.main:app --host 0.0.0.0 --port 8080 --reload
     ports: 
       - 8080:8080
-    volumes: 
-      - .:/invest_dash
-
-volumes:
-  .:

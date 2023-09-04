@@ -8,10 +8,10 @@ import time
 from scrapesites import scrapesites
 from db import add_ticker_eod
 
-# tickers = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
-with open('/invest_dash/top_100_symbols.csv', newline='') as f:
-    reader = csv.reader(f)
-    tickers = [row[0] for row in reader]
+tickers = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
+# with open('/invest_dash/top_100_symbols.csv', newline='') as f:
+#     reader = csv.reader(f)
+#     tickers = [row[0] for row in reader]
 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; \
     Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) \
