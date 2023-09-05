@@ -5,8 +5,8 @@ import random
 import requests
 import time
 
-from scrapesites import scrapesites
-from db import add_ticker_eod
+from . import scrapesites
+from backend.db import add_ticker_eod
 
 tickers = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
 # with open('/invest_dash/top_100_symbols.csv', newline='') as f:

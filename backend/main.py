@@ -1,9 +1,10 @@
 import logging
 from fastapi import FastAPI
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from . import db
-from . import crontest
+from backend.scraper import scrape
 
 logger = logging.getLogger(__name__)
 app = FastAPI()
@@ -12,7 +13,7 @@ app = FastAPI()
 @app.on_event("startup")
 def startup():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(crontest.main, 'cron', minute='*/1')
+    scheduler.add_job(scrape, CronTrigger.from_crontab('40 0 * * 1-5'))
     scheduler.start()
 
 @app.get("/")

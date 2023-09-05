@@ -73,22 +73,6 @@ def get_ticker_eods():
     except sqlite3.DatabaseError:
         raise
 
-# def get_ticker_eods():
-#     try:
-#         with con:
-#             result = con.execute(f"""SELECT json_group_array(
-#                 json_object(
-#                     'date', date, 
-#                     'ticker', ticker, 
-#                     'close', close
-#                     )
-#                 ) FROM {TICKER_EOD}
-#             """).fetchall()
-#             return result
-#     except sqlite3.DatabaseError:
-#         raise
-
-
 
 if __name__ == "__main__":
     # drop_eod_table()
