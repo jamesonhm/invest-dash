@@ -66,8 +66,8 @@ def get_ticker_eods():
             FROM 
                 {TICKER_EOD}
             ORDER BY 
-                date, 
                 ticker
+                ,date
             """).fetchall()
             return result
     except sqlite3.DatabaseError:

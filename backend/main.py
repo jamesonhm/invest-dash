@@ -13,7 +13,7 @@ app = FastAPI()
 @app.on_event("startup")
 def startup():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(scrape, CronTrigger.from_crontab('40 0 * * 1-5'))
+    scheduler.add_job(scrape, CronTrigger.from_crontab('30 0 * * 1-5'))
     scheduler.start()
 
 @app.get("/")

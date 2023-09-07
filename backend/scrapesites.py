@@ -16,8 +16,7 @@ from bs4 import BeautifulSoup
 
 
 class ScrapeSite(ABC):
-    def __init__(self, url_fstr: str):
-        self.url_fstr = url_fstr
+    
     
     def get_url(self, symbol: str) -> str:
         return self.url_fstr.format(symbol)
@@ -27,8 +26,13 @@ class ScrapeSite(ABC):
         pass
 
 
-class ScrapeSite_Yahoo(ScrapeSite):
-    
+class ScrapeSite_Yahoo():
+    def __init__(self):
+        self.__url_fstr = "https://finance.yahoo.com/quote/{}"
+
+    def get_url(self, symbol: str) -> str:
+        return self.__url_fstr.format(symbol)
+
     def get_close(self, soup: BeautifulSoup) -> float:
         close = soup.find("fin-streamer", {"class":"Fw(b) Fz(36px) Mb(-4px) D(ib)", "data-test":"qsp-price"}).text
         try:
@@ -46,8 +50,8 @@ class ScrapeSite_Morningstar(ScrapeSite):
         except:
             return 0.0
 
-yahoo = ScrapeSite_Yahoo("https://finance.yahoo.com/quote/{}")
+# yahoo = ScrapeSite_Yahoo("https://finance.yahoo.com/quote/{}")
 
-mstar = ScrapeSite_Morningstar("https://www.morningstar.com/stocks/xnys/{}/quote")
+# mstar = ScrapeSite_Morningstar("https://www.morningstar.com/stocks/xnys/{}/quote")
 
-scrapesites= [yahoo, mstar]
+# scrapesites= [yahoo, mstar]
