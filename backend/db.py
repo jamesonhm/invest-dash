@@ -73,6 +73,19 @@ def get_ticker_eods():
     except sqlite3.DatabaseError:
         raise
 
+def get_ticker(symbol):
+    try:
+        with con:
+            result = con.execute(f"""
+            SELECT date,  
+                   close
+              FROM ticker_eod
+             WHERE ticker = ?
+          ORDER BY date
+            """, [symbol]).fetchall()
+            return result
+    except sqlite3.DatabaseError:
+        raise
 
 if __name__ == "__main__":
     # drop_eod_table()
@@ -85,9 +98,13 @@ if __name__ == "__main__":
     else:
         print("No tables exist")
 
-    eods = get_ticker_eods()
-    print(eods)
-    print(type(eods))
+    # eods = get_ticker_eods()
+    # print(eods)
+    # print(type(eods))
+
+    aapl = get_ticker("AAPL")
+    print(aapl)
+
     # # print(today_eod[0][0])
     # for row in today_eod[0]:
     #     print(row)

@@ -13,7 +13,7 @@ app = FastAPI()
 @app.on_event("startup")
 def startup():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(scrape, CronTrigger.from_crontab('30 0 * * 1-5'))
+    scheduler.add_job(scrape, CronTrigger.from_crontab('0 21 * * 1-5'))
     scheduler.start()
 
 @app.get("/")
@@ -26,3 +26,7 @@ def get_tickers(limit: int = 30):
     print(result)
     return result
 
+@app.get("/ticker/{symbol}")
+def get_ticker(symbol: str):
+    result = db.get_ticker(symbol)
+    return result

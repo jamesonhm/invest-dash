@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from bs4 import BeautifulSoup
+
+### TODO: update for eoddata to read prices from tables
+# https://eoddata.com/symbols.aspx
 
 
 # https://finance.yahoo.com/quote/nke
@@ -13,17 +14,6 @@ from bs4 import BeautifulSoup
 # M https://www.zacks.com/stock/quote/NKE
 # https://www.tradingview.com/chart/?symbol=NKE
 # https://finviz.com/quote.ashx?t=NKE&p=d
-
-
-class ScrapeSite(ABC):
-    
-    
-    def get_url(self, symbol: str) -> str:
-        return self.url_fstr.format(symbol)
-    
-    @abstractmethod
-    def get_close(self, soup: BeautifulSoup) -> float:
-        pass
 
 
 class ScrapeSite_Yahoo():
@@ -40,18 +30,3 @@ class ScrapeSite_Yahoo():
         except:
             return 0.0
 
-
-class ScrapeSite_Morningstar(ScrapeSite):
-
-    def get_close(self, soup: BeautifulSoup) -> float:
-        close = soup.find("ul", {"class":"stock__quote-content stock__quote-content--overview"}).find_all('span')[2].text
-        try:
-            return float(close)
-        except:
-            return 0.0
-
-# yahoo = ScrapeSite_Yahoo("https://finance.yahoo.com/quote/{}")
-
-# mstar = ScrapeSite_Morningstar("https://www.morningstar.com/stocks/xnys/{}/quote")
-
-# scrapesites= [yahoo, mstar]
