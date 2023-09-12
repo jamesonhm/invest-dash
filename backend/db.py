@@ -98,12 +98,12 @@ if __name__ == "__main__":
     else:
         print("No tables exist")
 
-    # eods = get_ticker_eods()
-    # print(eods)
-    # print(type(eods))
+    eods = get_ticker_eods()
+    print(eods)
+    print(type(eods))
 
-    aapl = get_ticker("AAPL")
-    print(aapl)
+    # aapl = get_ticker("AAPL")
+    # print(aapl)
 
     # # print(today_eod[0][0])
     # for row in today_eod[0]:
