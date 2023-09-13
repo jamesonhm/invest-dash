@@ -23,7 +23,7 @@ def root():
 @app.get("/tickers")
 def get_tickers(limit: int = 30):
     result = db.get_ticker_eods()
-    print(result)
+    # print(result)
     return result
 
 @app.get("/ticker/{symbol}")

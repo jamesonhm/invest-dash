@@ -1,12 +1,13 @@
 import json
 import requests
+from typing import List, Tuple
 
 _BASE_URL_ = 'https://query2.finance.yahoo.com'
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 
 def _daily_close_history(ticker:str, period:str=None, interval:str='1d', 
-            start:str=None, end:str=None, timeout:int=10):
+            start:str=None, end:str=None, timeout:int=10) -> List[Tuple] | None:
     """
     Args:
         ticker(str): 
@@ -39,6 +40,37 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
         timeout=timeout
     )
 
-    print(json.dumps(data.json(), indent=2))
-    return data.json()
-    
+    if response.status_code != 200:
+        print(f"request failed for ticker {ticker} with status code {response.status_code}")
+        return None
+    rj = response.json()
+
+    try:
+        timestamps = rj["chart"]["result"][0]["timestamp"]
+    except KeyError:
+        print(f'KeyError for timestamp at path `rj["chart"]["result"][0]["timestamp"]`: {json.dumps(rj, indent=2)}')
+        return None
+    try:
+        closes = rj["chart"]["result"][0]["indicators"]["adjclose"][0]["adjclose"]
+    except KeyError:
+        print(f'KeyError for closes at path `rj["chart"]["result"][0]["indicators"]["adjclose"][0]["adjclose"]`: {json.dumps(rj, indent=2)}')
+        return None
+
+    return list(zip(timestamps, closes))
+
+
+def main():
+
+    data = _daily_close_history('amzn', '3d')
+    # print(json.dumps(data, indent=2))
+    for k in data:
+        print(k)
+    # print("***** data[1] *****")
+    # print(data[1])
+    # print("***** data[2] *****")
+    # print(data[2])
+    # print("***** data[3] *****")
+    # print(data[3])
+
+if __name__ == "__main__":
+    main()

@@ -99,8 +99,8 @@ if __name__ == "__main__":
         print("No tables exist")
 
     eods = get_ticker_eods()
-    print(eods)
-    print(type(eods))
+    for d in eods:
+        print(d)
 
     # aapl = get_ticker("AAPL")
     # print(aapl)
