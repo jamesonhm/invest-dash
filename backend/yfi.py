@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import json
 import requests
 from typing import List, Tuple
@@ -17,20 +18,35 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
             Either Use period parameter or use start and end
         interval(str): Default 1d
             Valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
-        start(str):
-            Download start date string (YYYY-MM-DD) or _datetime, inclusive.
-            Default is 1 years ago
+        start(datetime.timestamp):
+            Download start datetime, inclusive.
+            Default is 1 year ago
             E.g. for start="2020-01-01", the first data point will be on "2020-01-01"
-        end(str):
-            Download end date string (YYYY-MM-DD) or _datetime, exclusive.
+        end(datetime.timestamp):
+            Download end datetime, exclusive.
             Default is now
             E.g. for end="2023-01-01", the last data point will be on "2022-12-31"
     """
 
     url = f"{_BASE_URL_}/v8/finance/chart/{ticker}"
     
-    params = {"range": period,
-            "interval": interval}
+    params = {"interval": interval}
+
+    if period is None:
+        # use start end dates
+        if start is None:
+            period1 = datetime.now(timezone.utc) - timedelta(days=365)
+            period1 = int(period1.timestamp())
+        else:
+            period1 = start
+        if end is None:
+            period2 = int(datetime.today().timestamp())
+        else:
+            period2 = end
+        params["period1"] = period1
+        params["period2"] = period2
+    else:
+        params["range"] = period
 
     # Getting data from json
     response = requests.get(
@@ -59,18 +75,15 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
     return list(zip(timestamps, closes))
 
 
+
 def main():
 
-    data = _daily_close_history('amzn', '3d')
-    # print(json.dumps(data, indent=2))
+    # data = _daily_close_history('amzn', '3d')
+    # start = int(datetime(year=2023, month=9, day=1).timestamp())
+    end = int(datetime(year=2022, month=9, day=20).timestamp())
+    data = _daily_close_history('amzn', end=end)
     for k in data:
         print(k)
-    # print("***** data[1] *****")
-    # print(data[1])
-    # print("***** data[2] *****")
-    # print(data[2])
-    # print("***** data[3] *****")
-    # print(data[3])
 
 if __name__ == "__main__":
     main()
