@@ -1,12 +1,12 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-import datetime
 from fastapi import FastAPI
 import logging
 
 from . import db
 from backend.crontest import crontest
 from backend.scraper import scrape
+from backend.updater import update
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
@@ -20,6 +20,8 @@ def startup():
     trigger = CronTrigger(year='*', month='*', day='*', day_of_week='mon-fri', hour='21', minute='0', timezone="US/Eastern")
     # scheduler.add_job(scrape, CronTrigger.from_crontab('0 21 * * 1-5'))
     scheduler.add_job(scrape, trigger=trigger, name="Scraper")
+    trigger2 = CronTrigger(year='*', month='*', day='*', day_of_week='mon-fri', hour='18', minute='0', timezone="US/Eastern")
+    scheduler.add_job(update, trigger=trigger2, name="Updater")
     scheduler.start()
 
 @app.get("/")

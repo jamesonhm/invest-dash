@@ -8,7 +8,7 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleW
 
 
 def _daily_close_history(ticker:str, period:str=None, interval:str='1d', 
-            start:str=None, end:str=None, timeout:int=10) -> List[Tuple] | None:
+            start:str=None, end:str=None, timeout:int=10) -> List[Tuple[int, float]] | None:
     """
     Args:
         ticker(str): 
@@ -74,14 +74,24 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
 
     return list(zip(timestamps, closes))
 
-
+def get_days_history(ticker: str, days: int):
+    if days > 0:
+        days = str(days) + 'd'
+    else: 
+        return None
+    data = _daily_close_history(ticker, period=days)
+    return data
 
 def main():
 
-    # data = _daily_close_history('amzn', '3d')
+    data = _daily_close_history('amzn', '3d')
     # start = int(datetime(year=2023, month=9, day=1).timestamp())
-    end = int(datetime(year=2022, month=9, day=20).timestamp())
-    data = _daily_close_history('amzn', end=end)
+    # end = int(datetime(year=2022, month=9, day=20).timestamp())
+    # data = _daily_close_history('amzn', end=end)
+    prevts = 1694698200
+    ts = int(datetime.now().timestamp())
+    print((ts - prevts) / 86400)
+    
     for k in data:
         print(k)
 

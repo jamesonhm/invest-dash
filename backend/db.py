@@ -21,14 +21,16 @@ with con:
                     UNIQUE(date, ticker)
                 )
             """)
-    
 
-# def create_eod_table():
-#     try:
-#         with con:
-#             con.execute(f"CREATE TABLE {TICKER_EOD}(date TEXT, ticker TEXT, close NUMERIC, UNIQUE(date, ticker))")
-#     except sqlite3.OperationalError:
-#         print("ticker_eod already exists")
+with con:
+    con.execute("""
+                CREATE TABLE IF NOT EXISTS ticker_history (
+                    timestamp INTEGER, 
+                    ticker TEXT, 
+                    close NUMERIC, 
+                    UNIQUE(timestamp, ticker)
+                )
+            """)
 
 def drop_eod_table():
     try:
@@ -86,6 +88,29 @@ def get_ticker(symbol):
             return result
     except sqlite3.DatabaseError:
         raise
+
+def get_ticker_latest(symbol):
+    with con:
+        result = con.execute(f"""
+        SELECT max(timestamp) latest,  
+                count(timestamp) daycount
+            FROM ticker_history
+            WHERE ticker = ?
+        """, [symbol]).fetchall()
+        return result
+
+
+def update_history(ticker, timestamp, close):
+    with con:
+        result = con.execute(""" 
+            INSERT INTO ticker_history (
+                        timestamp,
+                        ticker,
+                        close
+            ) VALUES    (?, ?, ?) 
+            ON CONFLICT (timestamp, ticker) DO NOTHING
+        """, [timestamp, ticker, close])
+        return result
 
 if __name__ == "__main__":
     # drop_eod_table()
