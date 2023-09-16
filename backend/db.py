@@ -1,4 +1,5 @@
 import datetime
+import pandas as pd
 import sqlite3
 
 TICKER_EOD = "ticker_eod"
@@ -14,7 +15,7 @@ con.row_factory = dict_factory
 
 with con:
     con.execute(f"""
-                CREATE TABLE IF NOT EXISTS {TICKER_EOD} (
+                CREATE TABLE IF NOT EXISTS ticker_eod (
                     date TEXT, 
                     ticker TEXT, 
                     close NUMERIC, 
@@ -35,14 +36,14 @@ with con:
 def drop_eod_table():
     try:
         with con:
-            con.execute(f"DROP TABLE {TICKER_EOD}")
+            con.execute(f"DROP TABLE ticker_eod")
     except sqlite3.OperationalError:
         print("failed to drop table")
 
 def add_ticker_eod(date: datetime.date, ticker: str, close: float):
     try:
         with con:
-            con.execute(f"INSERT INTO {TICKER_EOD} (date, ticker, close) VALUES (?, ?, ?)", (date, ticker, close))
+            con.execute(f"INSERT INTO ticker_eod (date, ticker, close) VALUES (?, ?, ?)", (date, ticker, close))
     except sqlite3.IntegrityError:
         print(f"date/ticker combo already exists: {date}, {ticker}")
     except sqlite3.DatabaseError:
@@ -52,7 +53,7 @@ def add_ticker_eod(date: datetime.date, ticker: str, close: float):
 def get_recent_eods():
     try:
         with con:
-            result = con.execute(f"SELECT date, ticker, close FROM {TICKER_EOD} WHERE date > DATE() - 1").fetchall()
+            result = con.execute(f"SELECT date, ticker, close FROM ticker_eod WHERE date > DATE() - 1").fetchall()
             return result
     except sqlite3.DatabaseError:
         raise
@@ -61,15 +62,12 @@ def get_ticker_eods():
     try:
         with con:
             result = con.execute(f"""
-            SELECT 
-                date, 
-                ticker, 
-                close
-            FROM 
-                {TICKER_EOD}
-            ORDER BY 
-                ticker
-                ,date
+            SELECT date, 
+                   ticker, 
+                   close
+              FROM ticker_eod
+          ORDER BY ticker
+                  ,date
             """).fetchall()
             return result
     except sqlite3.DatabaseError:
@@ -106,11 +104,24 @@ def update_history(ticker, timestamp, close):
             INSERT INTO ticker_history (
                         timestamp,
                         ticker,
-                        close
-            ) VALUES    (?, ?, ?) 
+                        close) 
+                 VALUES (?, ?, ?) 
             ON CONFLICT (timestamp, ticker) DO NOTHING
         """, [timestamp, ticker, close])
         return result
+
+def calc_ema(ticker: str) -> None:
+    sql = """SELECT timestamp,
+                    close
+              FROM ticker_history
+            """ 
+    with con:
+        result = con.execute(sql).fetchall()
+        print(result)
+        return
+    df = pd.read_sql_query(sql=sql, con=con)
+    print(df)
+
 
 if __name__ == "__main__":
     # drop_eod_table()
@@ -119,14 +130,15 @@ if __name__ == "__main__":
     tablenames = con.execute("SELECT name FROM sqlite_master").fetchall()
     print(tablenames)
     if len(tablenames):
-        assert f"{TICKER_EOD}" in [table["name"] for table in tablenames]
+        assert f"ticker_eod" in [table["name"] for table in tablenames]
     else:
         print("No tables exist")
 
-    eods = get_ticker_eods()
-    for d in eods:
-        print(d)
+    # eods = get_ticker_eods()
+    # for d in eods:
+    #     print(d)
 
+    calc_ema('aapl')
     # aapl = get_ticker("AAPL")
     # print(aapl)
 
