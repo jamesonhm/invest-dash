@@ -9,14 +9,13 @@ from backend.db import get_ticker, get_ticker_latest, update_history, update_his
 from backend.yfi import get_days_history
 
 MIN_DAYS = 10
+MAX_DAYS = 90
 TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
 EMA_WINDOW = 3
 ROC_WINDOW = 3
 
 logger = logging.getLogger('apscheduler')
 test_logger = logging.getLogger(__name__)
-
-
 
 def update():
     """ 
@@ -66,6 +65,7 @@ def calc_query_days(ticker: str, min_days: int = MIN_DAYS) -> int:
             query_days = days_since_latest
             print(f"recent data, query days = {query_days}", flush=True)
     return query_days
+
 
 def calc_sroc(ticker: str, ema_window: int = EMA_WINDOW, roc_window: int = ROC_WINDOW) -> float:
     result = get_ticker(ticker)

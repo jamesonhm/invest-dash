@@ -87,6 +87,34 @@ def get_ticker(symbol: str) -> list[dict]:
     except sqlite3.DatabaseError:
         raise
 
+def get_ticker_sroc(symbol: str) -> list[dict]:
+    try:
+        with con:
+            result = con.execute(f"""
+            SELECT timestamp,  
+                   sroc
+              FROM ticker_history
+             WHERE ticker = ?
+          ORDER BY timestamp
+            """, [symbol]).fetchall()
+            return result
+    except sqlite3.DatabaseError:
+        raise
+
+def get_latest_scores() -> list[dict]:
+    try:
+        with con:
+            result = con.execute(f"""
+            SELECT max(timestamp)
+                   ,ticker 
+                   ,sroc
+              FROM ticker_history
+          GROUP BY ticker
+            """, [symbol]).fetchall()
+            return result
+    except sqlite3.DatabaseError:
+        raise
+
 def get_ticker_latest(symbol:str) -> list[dict]:
     with con:
         result = con.execute(f"""

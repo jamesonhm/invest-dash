@@ -19,7 +19,7 @@ def startup():
     scheduler = BackgroundScheduler()
     trigger = CronTrigger(year='*', month='*', day='*', day_of_week='mon-fri', hour='21', minute='0', timezone="US/Eastern")
     # scheduler.add_job(scrape, CronTrigger.from_crontab('0 21 * * 1-5'))
-    scheduler.add_job(scrape, trigger=trigger, name="Scraper")
+    # scheduler.add_job(scrape, trigger=trigger, name="Scraper")
     trigger2 = CronTrigger(year='*', month='*', day='*', day_of_week='mon-fri', hour='18', minute='0', timezone="US/Eastern")
     scheduler.add_job(update, trigger=trigger2, name="Updater")
     scheduler.start()
@@ -34,7 +34,17 @@ def get_tickers(limit: int = 30):
     # print(result)
     return result
 
-@app.get("/tickers/{symbol}")
+@app.get("/tickers/{symbol}/close")
 def get_ticker(symbol: str):
     result = db.get_ticker(symbol)
+    return result
+
+@app.get("/tickers/{symbol}/scores")
+def get_ticker(symbol: str):
+    result = db.get_ticker_sroc(symbol)
+    return result
+
+@app.get("/tickers/scores")
+def get_ticker(symbol: str):
+    result = db.get_latest_scores()
     return result
