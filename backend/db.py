@@ -27,9 +27,11 @@ with con:
                     timestamp INTEGER, 
                     ticker TEXT, 
                     close NUMERIC, 
+                    sroc NUMERIC,
                     UNIQUE(timestamp, ticker)
                 )
             """)
+
 
 def drop_eod_table():
     try:
@@ -120,6 +122,15 @@ def update_history_many(data: list[tuple]) -> int:
         """, data)
         return result
 
+def update_ticker_sroc(ticker: str, ts: int, sroc: float) -> int:
+    with con:
+        result = con.execute("""
+            UPDATE ticker_history
+               SET sroc = ?
+             WHERE timestamp = ?
+               AND ticker = ?
+        """, sroc, ts, ticker)
+        return result
 
 if __name__ == "__main__":
     # drop_eod_table()
