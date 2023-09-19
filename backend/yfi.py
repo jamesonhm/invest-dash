@@ -72,7 +72,7 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
         print(f'KeyError for closes at path `rj["chart"]["result"][0]["indicators"]["adjclose"][0]["adjclose"]`: {json.dumps(rj, indent=2)}')
         return None
 
-    return list(zip(timestamps, closes))
+    return list(zip(timestamps, [ticker] * len(timestamps), closes))
 
 def get_days_history(ticker: str, days: int):
     if days > 0:
@@ -84,7 +84,7 @@ def get_days_history(ticker: str, days: int):
 
 def main():
 
-    data = _daily_close_history('amzn', '3d')
+    data = _daily_close_history('AMZN', '10d')
     # start = int(datetime(year=2023, month=9, day=1).timestamp())
     # end = int(datetime(year=2022, month=9, day=20).timestamp())
     # data = _daily_close_history('amzn', end=end)

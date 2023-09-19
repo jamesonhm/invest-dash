@@ -1,8 +1,6 @@
 import datetime
-import pandas as pd
 import sqlite3
 
-TICKER_EOD = "ticker_eod"
 
 con = sqlite3.connect("./scraper.db", check_same_thread=False)
 
@@ -14,7 +12,7 @@ def dict_factory(cursor, row):
 con.row_factory = dict_factory
 
 with con:
-    con.execute(f"""
+    con.execute("""
                 CREATE TABLE IF NOT EXISTS ticker_eod (
                     date TEXT, 
                     ticker TEXT, 
@@ -73,21 +71,21 @@ def get_ticker_eods():
     except sqlite3.DatabaseError:
         raise
 
-def get_ticker(symbol):
+def get_ticker(symbol: str) -> list[dict]:
     try:
         with con:
             result = con.execute(f"""
-            SELECT date,  
+            SELECT timestamp,  
                    close
-              FROM ticker_eod
+              FROM ticker_history
              WHERE ticker = ?
-          ORDER BY date
+          ORDER BY timestamp
             """, [symbol]).fetchall()
             return result
     except sqlite3.DatabaseError:
         raise
 
-def get_ticker_latest(symbol):
+def get_ticker_latest(symbol:str) -> list[dict]:
     with con:
         result = con.execute(f"""
         SELECT max(timestamp) latest,  
@@ -98,7 +96,7 @@ def get_ticker_latest(symbol):
         return result
 
 
-def update_history(ticker, timestamp, close):
+def update_history(ticker: str, timestamp: int, close: float) -> int:
     with con:
         result = con.execute(""" 
             INSERT INTO ticker_history (
@@ -110,37 +108,36 @@ def update_history(ticker, timestamp, close):
         """, [timestamp, ticker, close])
         return result
 
-def calc_ema(ticker: str) -> None:
-    sql = """SELECT timestamp,
-                    close
-              FROM ticker_history
-            """ 
+def update_history_many(data: list[tuple]) -> int:
     with con:
-        result = con.execute(sql).fetchall()
-        print(result)
-        return
-    df = pd.read_sql_query(sql=sql, con=con)
-    print(df)
+        result = con.executemany(""" 
+            INSERT INTO ticker_history (
+                        timestamp,
+                        ticker,
+                        close) 
+                 VALUES (?, ?, ?) 
+            ON CONFLICT (timestamp, ticker) DO NOTHING
+        """, data)
+        return result
 
 
 if __name__ == "__main__":
     # drop_eod_table()
     # create_eod_table()
 
-    tablenames = con.execute("SELECT name FROM sqlite_master").fetchall()
-    print(tablenames)
-    if len(tablenames):
-        assert f"ticker_eod" in [table["name"] for table in tablenames]
-    else:
-        print("No tables exist")
+    # tablenames = con.execute("SELECT name FROM sqlite_master").fetchall()
+    # print(tablenames)
+    # if len(tablenames):
+    #     assert f"ticker_eod" in [table["name"] for table in tablenames]
+    # else:
+    #     print("No tables exist")
 
     # eods = get_ticker_eods()
     # for d in eods:
     #     print(d)
 
-    calc_ema('aapl')
-    # aapl = get_ticker("AAPL")
-    # print(aapl)
+    aapl = get_ticker("AAPL")
+    print(aapl)
 
     # # print(today_eod[0][0])
     # for row in today_eod[0]:
