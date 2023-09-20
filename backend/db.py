@@ -11,15 +11,6 @@ def dict_factory(cursor, row):
 
 con.row_factory = dict_factory
 
-with con:
-    con.execute("""
-                CREATE TABLE IF NOT EXISTS ticker_eod (
-                    date TEXT, 
-                    ticker TEXT, 
-                    close NUMERIC, 
-                    UNIQUE(date, ticker)
-                )
-            """)
 
 with con:
     con.execute("""
@@ -32,28 +23,23 @@ with con:
                 )
             """)
 
-
-def drop_eod_table():
+def drop_table(name: str):
     try:
         with con:
-            con.execute(f"DROP TABLE ticker_eod")
+            con.execute(f"DROP TABLE {name}")
     except sqlite3.OperationalError:
         print("failed to drop table")
-
-def add_ticker_eod(date: datetime.date, ticker: str, close: float):
-    try:
-        with con:
-            con.execute(f"INSERT INTO ticker_eod (date, ticker, close) VALUES (?, ?, ?)", (date, ticker, close))
-    except sqlite3.IntegrityError:
-        print(f"date/ticker combo already exists: {date}, {ticker}")
-    except sqlite3.DatabaseError:
-        print(f"{date}: unable to add close data for ticker {ticker}, close: {close}")
-        raise
 
 def get_recent_eods():
     try:
         with con:
-            result = con.execute(f"SELECT date, ticker, close FROM ticker_eod WHERE date > DATE() - 1").fetchall()
+            result = con.execute("""
+                SELECT date, 
+                       ticker, 
+                       close 
+                  FROM ticker_history
+                 WHERE date > DATE() - 1
+            """).fetchall()
             return result
     except sqlite3.DatabaseError:
         raise
@@ -61,11 +47,11 @@ def get_recent_eods():
 def get_ticker_eods():
     try:
         with con:
-            result = con.execute(f"""
+            result = con.execute("""
             SELECT date, 
                    ticker, 
                    close
-              FROM ticker_eod
+              FROM ticker_history
           ORDER BY ticker
                   ,date
             """).fetchall()
@@ -76,7 +62,7 @@ def get_ticker_eods():
 def get_ticker(symbol: str) -> list[dict]:
     try:
         with con:
-            result = con.execute(f"""
+            result = con.execute("""
             SELECT timestamp,  
                    close
               FROM ticker_history
@@ -90,7 +76,7 @@ def get_ticker(symbol: str) -> list[dict]:
 def get_ticker_sroc(symbol: str) -> list[dict]:
     try:
         with con:
-            result = con.execute(f"""
+            result = con.execute("""
             SELECT timestamp,  
                    sroc
               FROM ticker_history
@@ -104,7 +90,7 @@ def get_ticker_sroc(symbol: str) -> list[dict]:
 def get_latest_scores() -> list[dict]:
     try:
         with con:
-            result = con.execute(f"""
+            result = con.execute("""
             SELECT max(timestamp)
                    ,ticker 
                    ,sroc
@@ -117,7 +103,7 @@ def get_latest_scores() -> list[dict]:
 
 def get_ticker_latest(symbol:str) -> list[dict]:
     with con:
-        result = con.execute(f"""
+        result = con.execute("""
         SELECT max(timestamp) latest,  
                 count(timestamp) daycount
             FROM ticker_history

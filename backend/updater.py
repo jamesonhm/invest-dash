@@ -5,7 +5,7 @@ import polars as pl
 import random
 import time
 
-from backend.db import get_ticker, get_ticker_latest, update_history, update_history_many
+from backend.db import get_ticker, get_ticker_latest, update_history_many, update_ticker_sroc
 from backend.yfi import get_days_history
 
 MIN_DAYS = 10
