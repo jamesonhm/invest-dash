@@ -143,7 +143,7 @@ def update_ticker_sroc(ticker: str, ts: int, sroc: float) -> int:
                SET sroc = ?
              WHERE timestamp = ?
                AND ticker = ?
-        """, sroc, ts, ticker)
+        """, [sroc, ts, ticker])
         return result
 
 if __name__ == "__main__":

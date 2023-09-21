@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+import math
 from operator import itemgetter
 import polars as pl
 import random
@@ -10,7 +11,7 @@ from backend.yfi import get_days_history
 
 MIN_DAYS = 10
 MAX_DAYS = 90
-TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ"]
+TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ", "V", "WMT", "PG", "JPM"]
 EMA_WINDOW = 3
 ROC_WINDOW = 3
 
@@ -21,8 +22,8 @@ def update():
     """ 
     iterate tickers and get close data from api
     """
-
-    for ticker in TICKERS:
+    tickers = get_tickerslice(TICKERS)
+    for ticker in tickers:
         # calc days worth of data to query based on what is saved in db
         query_days = calc_query_days(ticker)
         logger.info(f"this is from the apscheduler logger, {query_days} days needed for {ticker}")
@@ -41,6 +42,18 @@ def update():
         sleep_time = random.randrange(1, 10)
         print(f"sleep: {sleep_time}", flush=True)
         time.sleep(sleep_time)
+
+
+def get_tickerslice(all_tickers: list) -> list:
+    # weekday(): mon=0, sun=6
+    wkday = datetime.now().weekday()
+    tkrs_per_day = round(len(all_tickers) / 5)
+    sl_start = wkday * tkrs_per_day
+    if wkday == 4:
+        # friday just goes to the end
+        return all_tickers[sl_start:]    
+    sl_end = sl_start + tkrs_per_day
+    return all_tickers[sl_start: sl_end]
 
 
 def calc_query_days(ticker: str, min_days: int = MIN_DAYS) -> int:
@@ -73,14 +86,13 @@ def calc_sroc(ticker: str, ema_window: int = EMA_WINDOW, roc_window: int = ROC_W
     data_series = [[row["timestamp"] for row in result], [row["close"] for row in result]]
     dict_data = {header: data for header, data in zip(headers, data_series)}
     df = pl.from_dict(dict_data)
-    print(df)
     df = df.with_columns(df["close"].ewm_mean(span=ema_window).alias("ema"))
-    print(df)
     df = df.with_columns((100.0 * (df["ema"] / df["ema"].shift(roc_window) - 1.0)).alias("sroc"))
-    print(df)
     return (df["timestamp"][-1], df["sroc"][-1])
 
 
 if __name__ == "__main__":
     # print(calc_ema('AMZN'))
-    update()
+    # update()
+    print(get_tickerslice(TICKERS))
+

@@ -5,7 +5,6 @@ import logging
 
 from . import db
 from backend.crontest import crontest
-from backend.scraper import scrape
 from backend.updater import update
 
 logger = logging.getLogger(__name__)
