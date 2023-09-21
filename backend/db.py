@@ -124,7 +124,7 @@ def update_history(ticker: str, timestamp: int, close: float) -> int:
         """, [timestamp, ticker, close])
         return result
 
-def update_history_many(data: list[tuple]) -> int:
+def update_close_many(data: list[tuple]) -> int:
     with con:
         result = con.executemany(""" 
             INSERT INTO ticker_history (
@@ -144,6 +144,16 @@ def update_ticker_sroc(ticker: str, ts: int, sroc: float) -> int:
              WHERE timestamp = ?
                AND ticker = ?
         """, [sroc, ts, ticker])
+        return result
+
+def update_sroc_many(data: list[dict]) -> int:
+    with con:
+        result = con.executemany(""" 
+            UPDATE ticker_history 
+               SET sroc = :sroc
+             WHERE timestamp = :timestamp
+               AND ticker = :ticker
+        """, data)
         return result
 
 if __name__ == "__main__":
