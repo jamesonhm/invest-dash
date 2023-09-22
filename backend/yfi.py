@@ -7,8 +7,8 @@ _BASE_URL_ = 'https://query2.finance.yahoo.com'
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 
-def _daily_close_history(ticker:str, period:str=None, interval:str='1d', 
-            start:str=None, end:str=None, timeout:int=10) -> List[Tuple[int, float]] | None:
+def _daily_close_history(ticker:str, period:str='', interval:str='1d', 
+            start:int=0, end:int=0, timeout:int=10) -> List[Tuple]:
     """
     Args:
         ticker(str): 
@@ -29,22 +29,22 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
     """
 
     url = f"{_BASE_URL_}/v8/finance/chart/{ticker}"
-    
+
     params = {"interval": interval}
 
-    if period is None:
+    if not period:
         # use start end dates
-        if start is None:
+        if not start:
             period1 = datetime.now(timezone.utc) - timedelta(days=365)
             period1 = int(period1.timestamp())
         else:
             period1 = start
-        if end is None:
+        if not end:
             period2 = int(datetime.today().timestamp())
         else:
             period2 = end
-        params["period1"] = period1
-        params["period2"] = period2
+        params["period1"] = str(period1)
+        params["period2"] = str(period2)
     else:
         params["range"] = period
 
@@ -58,32 +58,30 @@ def _daily_close_history(ticker:str, period:str=None, interval:str='1d',
 
     if response.status_code != 200:
         print(f"request failed for ticker {ticker} with status code {response.status_code}")
-        return None
+        return []
     rj = response.json()
 
     try:
         timestamps = rj["chart"]["result"][0]["timestamp"]
     except KeyError:
         print(f'KeyError for timestamp at path `rj["chart"]["result"][0]["timestamp"]`: {json.dumps(rj, indent=2)}')
-        return None
+        return []
     try:
         closes = rj["chart"]["result"][0]["indicators"]["adjclose"][0]["adjclose"]
     except KeyError:
         print(f'KeyError for closes at path `rj["chart"]["result"][0]["indicators"]["adjclose"][0]["adjclose"]`: {json.dumps(rj, indent=2)}')
-        return None
+        return []
 
     return list(zip(timestamps, [ticker] * len(timestamps), closes))
 
-def get_days_history(ticker: str, days: int):
-    if days > 0:
-        days = str(days) + 'd'
-    else: 
-        return None
-    data = _daily_close_history(ticker, period=days)
+
+def get_days_history(ticker: str, days: int) -> list[tuple]:
+    daystr = str(days) + 'd'
+    data = _daily_close_history(ticker, period=daystr)
     return data
 
-def main():
 
+def main():
     data = _daily_close_history('AMZN', '10d')
     # start = int(datetime(year=2023, month=9, day=1).timestamp())
     # end = int(datetime(year=2022, month=9, day=20).timestamp())
