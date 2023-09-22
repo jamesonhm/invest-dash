@@ -29,7 +29,6 @@ def update():
         logger.info(f"this is from the apscheduler logger, {query_days} days needed for {ticker}")
         if query_days < 1:
             continue
-                
         new_data = get_days_history(ticker, query_days)
         update_close_many(new_data)
         

@@ -16,9 +16,10 @@ app = FastAPI()
 @app.on_event("startup")
 def startup():
     scheduler = BackgroundScheduler()
-    trigger = CronTrigger(year='*', month='*', day='*', day_of_week='mon-fri', hour='21', minute='0', timezone="US/Eastern")
 
-    trigger2 = CronTrigger(year='*', month='*', day='*', day_of_week='mon-fri', hour='18', minute='0', timezone="US/Eastern")
+    trigger2 = CronTrigger(year='*', month='*', day='*',
+                           day_of_week='mon-fri', hour='18',
+                           minute='0', timezone="US/Mountain")
     scheduler.add_job(update, trigger=trigger2, name="Updater")
     scheduler.start()
 
@@ -38,7 +39,7 @@ def get_ticker(symbol: str):
     return result
 
 @app.get("/tickers/{symbol}/scores")
-def get_ticker(symbol: str):
+def get_score(symbol: str):
     result = db.get_ticker_sroc(symbol)
     return result
 
