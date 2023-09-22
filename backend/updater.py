@@ -1,7 +1,5 @@
 from datetime import datetime
 import logging
-import math
-from operator import itemgetter
 import polars as pl
 import random
 import time
@@ -9,7 +7,7 @@ import time
 from backend.db import get_ticker, get_ticker_latest, update_close_many, update_sroc_many
 from backend.yfi import get_days_history
 
-MIN_DAYS = 10
+MIN_DAYS = 20
 MAX_DAYS = 90
 TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ", "V", "WMT", "PG", "JPM"]
 EMA_WINDOW = 3
@@ -18,18 +16,19 @@ ROC_WINDOW = 3
 logger = logging.getLogger('apscheduler')
 test_logger = logging.getLogger(__name__)
 
+
 def update():
-    """ 
+    """
     iterate tickers and get close data from api
     """
     tickers = get_tickerslice(TICKERS)
     for ticker in tickers:
         # calc days worth of data to query based on what is saved in db
         query_days = calc_query_days(ticker)
-        query_days = 3
+ 
         logger.info(f"this is from the apscheduler logger, {query_days} days needed for {ticker}")
-        # if query_days < 1:
-        #     continue
+        if query_days < 1:
+            continue
                 
         new_data = get_days_history(ticker, query_days)
         update_close_many(new_data)

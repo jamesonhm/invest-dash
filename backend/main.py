@@ -43,6 +43,6 @@ def get_ticker(symbol: str):
     return result
 
 @app.get("/tickers/scores")
-def get_ticker(symbol: str):
+def get_scores(symbol: str):
     result = db.get_latest_scores()
     return result

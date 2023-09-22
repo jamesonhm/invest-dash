@@ -30,6 +30,7 @@ def drop_table(name: str):
     except sqlite3.OperationalError:
         print("failed to drop table")
 
+
 def get_recent_eods():
     try:
         with con:
@@ -43,6 +44,7 @@ def get_recent_eods():
             return result
     except sqlite3.DatabaseError:
         raise
+
 
 def get_ticker_eods():
     try:
@@ -58,6 +60,7 @@ def get_ticker_eods():
             return result
     except sqlite3.DatabaseError:
         raise
+
 
 def get_ticker(symbol: str) -> list[dict]:
     try:
@@ -96,7 +99,7 @@ def get_latest_scores() -> list[dict]:
                    ,sroc
               FROM ticker_history
           GROUP BY ticker
-            """, [symbol]).fetchall()
+            """)
             return result
     except sqlite3.DatabaseError:
         raise
