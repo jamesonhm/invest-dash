@@ -67,7 +67,7 @@ def get_ticker(symbol: str) -> list[dict]:
     try:
         with con:
             result = con.execute("""
-            SELECT timestamp,  
+            SELECT timestamp,
                    close
               FROM ticker_history
              WHERE ticker = ?
@@ -77,11 +77,12 @@ def get_ticker(symbol: str) -> list[dict]:
     except sqlite3.DatabaseError:
         raise
 
+
 def get_ticker_sroc(symbol: str) -> list[dict]:
     try:
         with con:
             result = con.execute("""
-            SELECT timestamp,  
+            SELECT timestamp,
                    sroc
               FROM ticker_history
              WHERE ticker = ?
@@ -91,12 +92,13 @@ def get_ticker_sroc(symbol: str) -> list[dict]:
     except sqlite3.DatabaseError:
         raise
 
+
 def get_latest_scores() -> list[dict]:
     try:
         with con:
             result = con.execute("""
-            SELECT max(timestamp)
-                   ,ticker 
+            SELECT max(timestamp) ts
+                   ,ticker
                    ,sroc
               FROM ticker_history
           GROUP BY ticker
@@ -104,6 +106,7 @@ def get_latest_scores() -> list[dict]:
             return result
     except sqlite3.DatabaseError:
         raise
+
 
 def get_ticker_latest(symbol:str) -> list[dict]:
     with con:
@@ -175,13 +178,14 @@ if __name__ == "__main__":
     #     assert f"ticker_eod" in [table["name"] for table in tablenames]
     # else:
     #     print("No tables exist")
-
+    data = get_latest_scores()
+    print(data)
     # eods = get_ticker_eods()
     # for d in eods:
     #     print(d)
 
-    aapl = get_ticker("AAPL")
-    print(aapl)
+#   aapl = get_ticker("AAPL")
+#   print(aapl)
 
     # # print(today_eod[0][0])
     # for row in today_eod[0]:
