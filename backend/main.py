@@ -3,7 +3,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from jinja2_fragments.fastapi import Jinja2Blocks
 import logging
 from pathlib import Path
 
@@ -15,7 +15,7 @@ logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 app = FastAPI()
 BASE_PATH = Path(__file__).resolve().parent
-templates = Jinja2Templates(directory=str(BASE_PATH / "../frontend/templates"))
+templates = Jinja2Blocks(directory=str(BASE_PATH / "../frontend/templates"))
 
 
 @app.on_event("startup")
@@ -29,10 +29,11 @@ def startup():
 
 
 @app.get("/", status_code=200, response_class=HTMLResponse)
-def root(request: Request):
-    data = db.get_latest_scores()
-    return templates.TemplateResponse("index.html", {"request": request,
-                                                     "data": data})
+def root(request: Request, limit: int = 20):
+    data = db.get_latest_scores(limit)
+    context = {"request": request,
+               "data": data}
+    return templates.TemplateResponse("scoretbl.html", context)
 
 
 @app.get("/tickers")
@@ -53,7 +54,10 @@ def get_score(symbol: str):
     return result
 
 
-@app.get("/tickers/scores", status_code=200)
-def get_scores():
-    data = db.get_latest_scores()
-    return data
+@app.get("/scores", response_class=HTMLResponse)
+def get_scores(request: Request, limit: int):
+    data = db.get_latest_scores(limit)
+    context = {"request": request,
+               "data": data}
+    return templates.TemplateResponse("scoretbl.html", context,
+                                      block_name="table")

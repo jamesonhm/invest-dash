@@ -93,7 +93,7 @@ def get_ticker_sroc(symbol: str) -> list[dict]:
         raise
 
 
-def get_latest_scores() -> list[dict]:
+def get_latest_scores(limit: int) -> list[dict]:
     try:
         with con:
             result = con.execute("""
@@ -102,7 +102,9 @@ def get_latest_scores() -> list[dict]:
                    ,sroc
               FROM ticker_history
           GROUP BY ticker
-            """).fetchall()
+          ORDER BY sroc DESC
+             LIMIT ? 
+             """, [limit]).fetchall()
             return result
     except sqlite3.DatabaseError:
         raise

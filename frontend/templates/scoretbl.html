@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+
+{% block table %}
+	<table>
+		<caption>Top N Stocks</caption>
+		<thead>
+			<tr>
+			<th scope="col">TS</th>
+			<th scope="col">Symbol</th>
+			<th scope="col">Score</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in data %}
+			<tr>
+				<td>{{ row['ts'] }}</td>
+				<td>{{ row['ticker'] }}</td>
+				<td>{{ row['sroc'] }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
