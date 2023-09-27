@@ -10,12 +10,11 @@
 	</head>
 	<body>
 		<div>
-			<!-- <form action="/" method="get"> -->
-				<select hx-get="/" name="limit" hx-target="table" hx-swap="outerHTML">
-					<option value="10">10</option>
-					<option value="15">15</option>
-					<option value="20">20</option>
-				</select>
+			<select hx-get="/" name="limit" hx-target="table" hx-swap="outerHTML">
+				<option value="10">10</option>
+				<option value="15">15</option>
+				<option value="20">20</option>
+			</select>
 		</div>
 		<div>
 			{% block table %}
@@ -31,7 +30,7 @@
 			<tbody>
 					{% for row in data %}
 					<tr>
-						<td>{{ row['ts'] }}</td>
+						<td>{{ ts_to_str(row['ts']) }}</td>
 						<td>{{ row['ticker'] }}</td>
 						<td>{{ row['sroc'] }}</td>
 					</tr>

@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 
 from . import db
+from backend.helpers import ts_to_str
 from backend.updater import update
 
 logging.basicConfig()
@@ -32,7 +33,8 @@ def startup():
 def root(request: Request, limit: int = 20):
     data = db.get_latest_scores(limit)
     context = {"request": request,
-               "data": data}
+               "data": data,
+               "ts_to_str": ts_to_str}
     block_name = None
     if request.headers.get("HX-Request"):
         block_name = "table"
