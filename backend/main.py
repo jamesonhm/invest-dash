@@ -33,7 +33,12 @@ def root(request: Request, limit: int = 20):
     data = db.get_latest_scores(limit)
     context = {"request": request,
                "data": data}
-    return templates.TemplateResponse("scoretbl.html", context)
+    block_name = None
+    if request.headers.get("HX-Request"):
+        block_name = "table"
+    return templates.TemplateResponse("index.html",
+                                      context,
+                                      block_name=block_name)
 
 
 @app.get("/tickers")
@@ -52,12 +57,3 @@ def get_ticker(symbol: str):
 def get_score(symbol: str):
     result = db.get_ticker_sroc(symbol)
     return result
-
-
-@app.get("/scores", response_class=HTMLResponse)
-def get_scores(request: Request, limit: int):
-    data = db.get_latest_scores(limit)
-    context = {"request": request,
-               "data": data}
-    return templates.TemplateResponse("scoretbl.html", context,
-                                      block_name="table")
