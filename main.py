@@ -3,11 +3,12 @@ from apscheduler.triggers.cron import CronTrigger
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from jinja2_fragments.fastapi import Jinja2Blocks
 import logging
 from pathlib import Path
 
-from . import db
+from backend import db
 from backend.helpers import ts_to_str
 from backend.updater import update
 
@@ -15,8 +16,9 @@ logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 BASE_PATH = Path(__file__).resolve().parent
-templates = Jinja2Blocks(directory=str(BASE_PATH / "../frontend/templates"))
+templates = Jinja2Blocks(directory=str(BASE_PATH / "frontend/templates"))
 
 
 @app.on_event("startup")
@@ -59,3 +61,11 @@ def get_ticker(symbol: str):
 def get_score(symbol: str):
     result = db.get_ticker_sroc(symbol)
     return result
+
+
+@app.get("/chart", response_class=HTMLResponse)
+def get_chart(request: Request):
+    context = {"request": request}
+    return templates.TemplateResponse("chart.html", context)
+
+

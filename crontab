@@ -1,4 +1,0 @@
-# 40 0 * * 1-5 /usr/local/bin/python /invest_dash/backend/scraper.py > /proc/1/fd/1 2>/proc/1/fd/2
-* * * * * /usr/local/bin/python /invest_dash/backend/crontest.py > /invest_dash/cronlog.log > 2>&1
-# */2 * * * 1-5 /usr/local/bin/python /invest_dash/backend/scraper.py > /proc/1/fd/1 2>/proc/1/fd/2
-# new line required
