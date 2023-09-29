@@ -4,13 +4,14 @@
 	<head>
 		<meta charstet="utf-8">	
 		<meta name="viewport" content="initial-scale=1, width=device-width">
+		<link rel="stylesheet" href="static/css/grid.css">
 		<script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
 
 		<title>Dual Momentum</title>
 	</head>
 	<body>
 		<div>
-			<select hx-get="/" name="limit" hx-target="table" hx-swap="outerHTML">
+			<select hx-get="/" name="limit" hx-target=".table" hx-swap="outerHTML">
 				<option value="10">10</option>
 				<option value="15">15</option>
 				<option value="20">20</option>
@@ -18,30 +19,25 @@
 		</div>
 		<div>
 			{% block table %}
-			<table>
-				<caption>Top N Stocks</caption>
-			<thead>
-					<tr>
-						<th scope="col">TS</th>
-						<th scope="col">Symbol</th>
-						<th scope="col">Score</th>
-					</tr>
-				</thead>
-			<tbody>
-					{% for row in data %}
-					<tr>
-						<td>{{ ts_to_str(row['ts']) }}</td>
-						<td>{{ row['ticker'] }}</td>
-						<td>{{ row['sroc'] }}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+			<div class="table">
+				<div class="row tblhdr">
+					<div><strong>TS</strong></div>
+					<div><strong>Symbol</strong></div>
+					<div><strong>Score</strong></div>
+				</div>
+				{% for row in data %}
+				<div class="row" hx-get="/chart_data" name="ticker" hx-target="#testp" value="{{ row.ticker }}">
+					<div class="rdata">{{ ts_to_str(row.ts) }}</div>
+					<div class="rdata">{{ row.ticker }}</div>
+					<div class="rdata">{{ round(row.sroc)}}</div>
+				</div>
+				{% endfor %}
+			</div>
 			{% endblock %}
 		</div>
 		<div>
 			<!-- chart.js here -->
-
+			<p id="testp">this is where testp is</p>
 		</div>
 	</body>
 </html>

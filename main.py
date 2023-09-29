@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 
 from backend import db
-from backend.helpers import ts_to_str
+from backend.helpers import ts_to_str, score_round
 from backend.updater import update
 
 logging.basicConfig()
@@ -36,13 +36,23 @@ def root(request: Request, limit: int = 20):
     data = db.get_latest_scores(limit)
     context = {"request": request,
                "data": data,
-               "ts_to_str": ts_to_str}
+               "ts_to_str": ts_to_str,
+               "round": score_round}
     block_name = None
     if request.headers.get("HX-Request"):
         block_name = "table"
     return templates.TemplateResponse("index.html",
                                       context,
                                       block_name=block_name)
+
+
+@app.get("/chart_data", status_code=200)
+def chart_data(ticker: str = ''):
+    # data = db.get_history(ticker)
+    # print(f"request: {request.json()}")
+    print(f"ticker: {ticker}")
+    context = {"data": ticker}
+    return context
 
 
 @app.get("/tickers")

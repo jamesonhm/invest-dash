@@ -1,0 +1,17 @@
+.table {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 500px;
+}
+
+
+.row {
+    display: grid;
+    grid-template-columns: minmax(175px, 225px) minmax(50px, 100px) minmax(100px, 175px);
+}
+
+
+.rdata {
+    padding: 4px 4px;
+}
+
