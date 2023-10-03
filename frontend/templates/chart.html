@@ -4,7 +4,7 @@
     <div>
         <canvas id="myChart"></canvas>
     </div>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> -->
+
     <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
@@ -12,37 +12,38 @@
         data: {
             labels: {{ labels }}, <!--[{{ labels|map('ts_to_str')|join(', ') }}],<!--["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],-->-->
             datasets: [{
-                data: {{ y1 }},<!--[86, 114, 106, 106, 107, 111, 133],
-                label: "close",
+                data: {{ y2 }},<!--[86, 114, 106, 106, 107, 111, 133],
+                label: "score",
                 borderColor: "#3e95cd",
                 backgroundColor: "#7bb6dd",
                 fill: false,
-                <!-- yAxisID: 'yAxisL', -->
+                <!-- yAxisID: 'y', -->
             },
-            {
-                data: {{ y2 }},
-                label: "score",
-                borderColor: "#3cba9f",
-                backgroundColor: "#7bb6dd",
-                fill: false,
-                yAxisID: 'y',
-            }]
+            <!-- { -->
+            <!--     data: {{ y2 }}, -->
+            <!--     label: "score", -->
+            <!--     borderColor: "#3cba9f", -->
+            <!--     backgroundColor: "#7bb6dd", -->
+            <!--     fill: false, -->
+            <!--     <!-- yAxisID: 'y', --> -->
+            <!-- } -->
+            ]
         },
-        options: {
-            stacked: false,
-            scales: {
-                yAxisL: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                },
-                yAxisR: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                }
-            }
-        }
+        <!-- options: { -->
+        <!--     stacked: false, -->
+        <!--     scales: { -->
+        <!--         y: { -->
+        <!--             type: 'linear', -->
+        <!--             display: true, -->
+        <!--             position: 'left', -->
+        <!--         }, -->
+        <!--         yAxisR: { -->
+        <!--             type: 'linear', -->
+        <!--             display: true, -->
+        <!--             position: 'right', -->
+        <!--         } -->
+        <!--     } -->
+        <!-- } -->
     });
     </script>
 </div>
