@@ -6,7 +6,8 @@
 		<meta name="viewport" content="initial-scale=1, width=device-width">
 		<link rel="stylesheet" href="static/css/grid.css">
 		<script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
-
+		<!-- <script src="static/js/history.js" type="text/javascript"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
 		<title>Dual Momentum</title>
 	</head>
 	<body>
@@ -26,7 +27,7 @@
 					<div><strong>Score</strong></div>
 				</div>
 				{% for row in data %}
-				<div class="row" hx-get="/chart_data" name="ticker" hx-target="#testp" value="{{ row.ticker }}">
+					<div class="row" hx-get="/chart_data" hx-target="#innerChart" hx-swap="outerHTML" hx-vals='{"ticker": "{{ row.ticker }}"}'>
 					<div class="rdata">{{ ts_to_str(row.ts) }}</div>
 					<div class="rdata">{{ row.ticker }}</div>
 					<div class="rdata">{{ round(row.sroc)}}</div>
@@ -35,9 +36,14 @@
 			</div>
 			{% endblock %}
 		</div>
-		<div>
-			<!-- chart.js here -->
-			<p id="testp">this is where testp is</p>
+		<div id="outerChart">
+			{% block chart %}
+			<div id="innerChart">
+				
+			</div> 
+			{% endblock %}
 		</div>
+
+		<!-- <script src="static/js/history.js" type="text/javascript"></script> -->
 	</body>
 </html>

@@ -1,33 +1,49 @@
-<!DOCTYPE html>
-
-<html lang="en">
-    <head>
-        <meta charstet="utf-8">	
-        <meta name="viewport" content="initial-scale=1, width=device-width">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
-        <!-- <script src="frontend/static/js/history.js" type="text/javascript"></script> -->
-        <title>Chart Test</title>
-    </head>
-    <body>
-        <div>
-            <!-- chart.js here -->
-            <canvas id="myChart"></canvas>
-        </div>
-
-        <script src="static/js/history.js" type="text/javascript"></script>
-        <!-- var ctx = document.getElementById('myChart').getContext('2d'); -->
-        <!-- var myChart = new Chart(ctx, { -->
-        <!--     type: 'line', -->
-        <!--     data: { -->
-        <!--         labels: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"], -->
-        <!--         datasets: [{ -->
-        <!--             data: [86, 114, 106, 106, 107, 111, 133], -->
-        <!--             label: "total", -->
-        <!--             borderColor: "#3e95cd", -->
-        <!--             backgroundColor: "#7bb6dd" -->
-        <!--         }] -->
-        <!--     }, -->
-        <!-- }); -->
-    
-    </body>
-</html>
+{% extends "index.html" %}
+{% block chart %}
+<div id="innerChart">
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> -->
+    <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels }}, <!--[{{ labels|map('ts_to_str')|join(', ') }}],<!--["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],-->-->
+            datasets: [{
+                data: {{ y1 }},<!--[86, 114, 106, 106, 107, 111, 133],
+                label: "close",
+                borderColor: "#3e95cd",
+                backgroundColor: "#7bb6dd",
+                fill: false,
+                <!-- yAxisID: 'yAxisL', -->
+            },
+            {
+                data: {{ y2 }},
+                label: "score",
+                borderColor: "#3cba9f",
+                backgroundColor: "#7bb6dd",
+                fill: false,
+                yAxisID: 'y',
+            }]
+        },
+        options: {
+            stacked: false,
+            scales: {
+                yAxisL: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                },
+                yAxisR: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                }
+            }
+        }
+    });
+    </script>
+</div>
+{% endblock %}

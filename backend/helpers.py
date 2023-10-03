@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 def ts_to_str(ts: float):
-    return datetime.fromtimestamp(ts)
+    return datetime.fromtimestamp(ts).strftime("%Y/%m/%d %H:%M:%S")
 
 
 def score_round(score: float):
