@@ -6,10 +6,14 @@
 
 #table_container {
     grid-column: 1;
+    position: relative;
+    width: 50vw;
 }
 
 #chart_container {
     grid-column: 2;
+    position: relative;
+    width: 50vw;
 }
 
 .table {

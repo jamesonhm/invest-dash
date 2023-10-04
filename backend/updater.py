@@ -1,5 +1,7 @@
+import csv
 from datetime import datetime
 import logging
+from pathlib import Path
 import polars as pl
 import random
 import time
@@ -7,9 +9,18 @@ import time
 from backend.db import get_ticker, get_ticker_latest, update_close_many, update_sroc_many
 from backend.yfi import get_days_history
 
+
+BASE_PATH = Path(__file__).resolve().cwd()
+TICKER_PATH = BASE_PATH / "top_100_symbols.csv"
+
+
 MIN_DAYS = 20
 MAX_DAYS = 90
-TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ", "V", "WMT", "PG", "JPM"]
+# TICKER_PATH = "../top_100_symbols.csv"
+# TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ", "V", "WMT", "PG", "JPM"]
+with open(TICKER_PATH, 'r') as f:
+    reader = csv.reader(f)
+    TICKERS = [row[0] for row in reader]
 EMA_WINDOW = 3
 ROC_WINDOW = 3
 
@@ -25,13 +36,13 @@ def update():
     for ticker in tickers:
         # calc days worth of data to query based on what is saved in db
         query_days = calc_query_days(ticker)
- 
+
         logger.info(f"this is from the apscheduler logger, {query_days} days needed for {ticker}")
         if query_days < 1:
             continue
         new_data = get_days_history(ticker, query_days)
         update_close_many(new_data)
-        
+
         # calc sroc for ticker and update sroc table
         sroc_data = calc_sroc(ticker)
         update_sroc_many(sroc_data)
@@ -60,11 +71,11 @@ def calc_query_days(ticker: str, min_days: int = MIN_DAYS) -> int:
     latest, daycount = latest_data['latest'], latest_data['daycount']
 
     print(f"{ticker}: latest: {latest}, daycount: {daycount}", flush=True)
-    
+
     if latest is None:
         query_days = min_days
         print(f"no data, query days = {query_days}", flush=True)
-    else:  
+    else:
         days_since_latest = int((datetime.now().timestamp() - latest)/86400)
         print(f"days_since: {days_since_latest}", flush=True)
         if days_since_latest + daycount < min_days or days_since_latest > min_days: 
@@ -97,5 +108,7 @@ def calc_sroc(ticker: str, ema_window: int = EMA_WINDOW, roc_window: int = ROC_W
 if __name__ == "__main__":
     # calc_sroc('AMZN')
     update()
+    # print(BASE_PATH)
+    # print(TICKERS)
     # print(get_tickerslice(TICKERS))
 
