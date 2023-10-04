@@ -67,17 +67,14 @@ def chart_data(request: Request, ticker: str = ''):
     labels = [row["timestamp"] for row in data]
     closes = [round(row["close"] or 0, 2) for row in data]
     scores = [round(row["sroc"] or 0, 2) for row in data]
-    chart_data = {"labels": labels,
-                  "y1": closes,
-                  "y2": scores}
     context = {"request": request,
                "labels": labels,
                "y1": closes,
                "y2": scores,
                "ts_to_str": ts_to_str}
     block_name = None
-    if request.headers.get("HX-Request"):
-        block_name = "chart"
+    # if request.headers.get("HX-Request"):
+    #     block_name = "chart"
     return templates.TemplateResponse("chart.html",
                                       context,
                                       block_name=block_name)

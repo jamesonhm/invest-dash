@@ -1,50 +1,29 @@
-{% extends "index.html" %}
-{% block chart %}
 <div id="innerChart">
-    <div>
-        <canvas id="myChart"></canvas>
-    </div>
+    <canvas id="myChart"></canvas>
+</div>
 
-    <script>
+<script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ labels }}, <!--[{{ labels|map('ts_to_str')|join(', ') }}],<!--["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],-->-->
+            labels: {{ labels }}, 
             datasets: [{
-                data: {{ y2 }},<!--[86, 114, 106, 106, 107, 111, 133],
+                data: {{ y2 }},
                 label: "score",
                 borderColor: "#3e95cd",
                 backgroundColor: "#7bb6dd",
                 fill: false,
-                <!-- yAxisID: 'y', -->
             },
-            <!-- { -->
-            <!--     data: {{ y2 }}, -->
-            <!--     label: "score", -->
-            <!--     borderColor: "#3cba9f", -->
-            <!--     backgroundColor: "#7bb6dd", -->
-            <!--     fill: false, -->
-            <!--     <!-- yAxisID: 'y', --> -->
-            <!-- } -->
             ]
         },
-        <!-- options: { -->
-        <!--     stacked: false, -->
-        <!--     scales: { -->
-        <!--         y: { -->
-        <!--             type: 'linear', -->
-        <!--             display: true, -->
-        <!--             position: 'left', -->
-        <!--         }, -->
-        <!--         yAxisR: { -->
-        <!--             type: 'linear', -->
-        <!--             display: true, -->
-        <!--             position: 'right', -->
-        <!--         } -->
-        <!--     } -->
-        <!-- } -->
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
     });
-    </script>
-</div>
-{% endblock %}
+</script>
+
