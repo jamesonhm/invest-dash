@@ -15,21 +15,21 @@
 			<select hx-get="/" name="limit" hx-target=".table" hx-swap="outerHTML">
 				<option value="10">10</option>
 				<option value="15">15</option>
-				<option value="20">20</option>
+				<option selected value="20">20</option>
 			</select>
 		</div>
 		<div class='wrapper'>
 			
-			<div id="table_container">
+			<div class="table-container">
 				{% block table %}
 				<div class="table">
 					<div class="row tblhdr">
-					<div><strong>TS</strong></div>
-						<div><strong>Symbol</strong></div>
-						<div><strong>Score</strong></div>
+						<div class="rhdr">TS</div>
+						<div class="rhdr">Symbol</div>
+						<div class="rhdr">Score</div>
 					</div>
 					{% for row in data %}
-					<div class="row" hx-get="/chart_data" hx-target="#chart_container" hx-vals='{"ticker": "{{ row.ticker }}"}'>
+					<div class="row rhover" hx-get="/chart_data" hx-target=".chart-container" hx-vals='{"ticker": "{{ row.ticker }}"}'>
 						<div class="rdata">{{ ts_to_str(row.ts) }}</div>
 						<div class="rdata">{{ row.ticker }}</div>
 						<div class="rdata">{{ round(row.sroc)}}</div>
@@ -38,7 +38,7 @@
 				</div>
 				{% endblock %}
 			</div>
-			<div id="chart_container">
+<div class="chart-container" hx-get="/chart_data" hx-trigger="load" hx-vals='{"ticker": "{{ data[0].ticker }}"}'>
 			</div>
 		</div>
 

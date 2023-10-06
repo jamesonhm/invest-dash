@@ -1,0 +1,21 @@
+<canvas id="myChart"></canvas>
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+{% autoescape false %}
+    cdata = {{ data }};
+{% endautoescape %}
+    console.log(cdata);
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                data: cdata,
+                // borderColor: "#3e95cd",
+                // backgroundColor: "#7bb6dd",
+                // fill: false,
+            }]
+        },
+    });
+</script>
+

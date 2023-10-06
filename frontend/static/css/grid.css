@@ -1,33 +1,40 @@
 .wrapper {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
+    grid-auto-rows: 560px;
     gap: 10px;
 }
 
-#table_container {
+.table-container {
     grid-column: 1;
     position: relative;
-    width: 50vw;
 }
 
-#chart_container {
+.chart-container {
     grid-column: 2;
     position: relative;
-    width: 50vw;
+    padding: 15px;
 }
 
 .table {
     display: grid;
     grid-template-columns: 1fr;
-    width: 500px;
+    gap: 5px;
 }
-
 
 .row {
     display: grid;
-    grid-template-columns: minmax(175px, 225px) minmax(50px, 100px) minmax(100px, 175px);
+    grid-template-columns: minmax(180px, 225px) minmax(80px, 100px) minmax(65px, 175px);
 }
 
+.rhover:hover {
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px #ff7043;
+}
+
+.rhdr {
+    font-weight: bold;
+}
 
 .rdata {
     padding: 4px 4px;

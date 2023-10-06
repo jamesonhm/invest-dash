@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 
 def ts_to_str(ts: float):
@@ -7,6 +8,10 @@ def ts_to_str(ts: float):
 
 def score_round(score: float):
     return round(score or 0, 2)
+
+
+def from_json(s):
+    return json.loads(s)
 
 
 if __name__ == "__main__":

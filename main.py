@@ -6,12 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2_fragments.fastapi import Jinja2Blocks
+import json
 import logging
 from markupsafe import Markup
 from pathlib import Path
 
 from backend import db
-from backend.helpers import ts_to_str, score_round
+from backend.helpers import from_json, ts_to_str, score_round
 from backend.updater import update
 
 logging.basicConfig()
@@ -21,7 +22,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 BASE_PATH = Path(__file__).resolve().parent
 templates = Jinja2Blocks(directory=str(BASE_PATH / "frontend/templates"))
-templates.env.filters["ts_to_str"] = ts_to_str
+templates.env.filters["from_json"] = from_json
 
 origins = ["*"]
 app.add_middleware(
@@ -68,6 +69,7 @@ def chart_data(request: Request, ticker: str = ''):
     closes = [round(row["close"] or 0, 2) for row in data]
     scores = [round(row["sroc"] or 0, 2) for row in data]
     context = {"request": request,
+               "ticker": ticker,
                "labels": labels,
                "y1": closes,
                "y2": scores,
@@ -78,6 +80,16 @@ def chart_data(request: Request, ticker: str = ''):
     return templates.TemplateResponse("chart.html",
                                       context,
                                       block_name=block_name)
+
+
+@app.get("/chart_data2", status_code=200, response_class=HTMLResponse)
+def chart_data2(request: Request, ticker: str = ''):
+    data = db.get_ticker_sroc(ticker)
+    # data = json.dumps(data)
+    context = {"request": request,
+               "data": data}
+    return templates.TemplateResponse("chart2.html",
+                                      context)
 
 
 @app.get("/tickers")

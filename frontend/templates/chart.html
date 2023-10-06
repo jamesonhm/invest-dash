@@ -9,16 +9,22 @@
             datasets: [{
                 data: {{ y2 }},
                 label: "score",
-                borderColor: "#3e95cd",
-                backgroundColor: "#7bb6dd",
+                borderColor: "#ff7043",
+                backgroundColor: "#ff7043",
                 fill: false,
             },
             ]
         },
         options: {
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text:  "{{ ticker }}",
+                    position: 'top'
                 }
             }
         }
