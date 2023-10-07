@@ -1,3 +1,10 @@
+body {
+    background-color: #212121;
+    color: CanvasText;
+    color-scheme: dark;
+    font-family: Verdana, Helvetica, sans-serif;
+}
+
 .wrapper {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -27,9 +34,16 @@
     grid-template-columns: minmax(180px, 225px) minmax(80px, 100px) minmax(65px, 175px);
 }
 
+.rhover {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.07);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
 .rhover:hover {
-    border-radius: 10px;
-    box-shadow: 5px 5px 5px #ff7043;
+    background-color: rgba(255, 255, 255, 0.07);
+    box-shadow: 2px 2px 5px rgba(255, 112, 67, 0.5);
+
 }
 
 .rhdr {
