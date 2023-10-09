@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 from pathlib import Path
 import polars as pl
@@ -13,19 +13,17 @@ from backend.yfi import get_days_history
 BASE_PATH = Path(__file__).resolve().cwd()
 TICKER_PATH = BASE_PATH / "top_100_symbols.csv"
 
+EVAL_DAYS = 90
+QUERY_DAYS = int(((90 / 5) * 2) + EVAL_DAYS)
+MAX_DAYS = QUERY_DAYS * 2
+EMA_WINDOW = 13
+ROC_WINDOW = 90
 
-MIN_DAYS = 20
-MAX_DAYS = 90
-# TICKER_PATH = "../top_100_symbols.csv"
-# TICKERS = ["AAPL", "MSFT", "AMZN", "TSLA", "GOOGL", "GOOG", "META", "NVDA", "UNH", "JNJ", "V", "WMT", "PG", "JPM"]
 with open(TICKER_PATH, 'r') as f:
     reader = csv.reader(f)
     TICKERS = [row[0] for row in reader]
-EMA_WINDOW = 3
-ROC_WINDOW = 3
 
 logger = logging.getLogger('apscheduler')
-test_logger = logging.getLogger(__name__)
 
 
 def update():
@@ -33,11 +31,13 @@ def update():
     iterate tickers and get close data from api
     """
     tickers = get_tickerslice(TICKERS)
+    min_ts = datetime.timestamp(datetime.now() - timedelta(days=MAX_DAYS))
+    logger.info(f"min timestamp: {min_ts}")
     for ticker in tickers:
         # calc days worth of data to query based on what is saved in db
+        logger.info(f"{datetime.now()}:: Update: {ticker}")
         query_days = calc_query_days(ticker)
 
-        logger.info(f"this is from the apscheduler logger, {query_days} days needed for {ticker}")
         if query_days < 1:
             continue
         new_data = get_days_history(ticker, query_days)
@@ -50,7 +50,7 @@ def update():
         # prune data
 
         sleep_time = random.randrange(1, 10)
-        print(f"sleep: {sleep_time}", flush=True)
+        logger.info(f"sleep: {sleep_time}")
         time.sleep(sleep_time)
 
 
@@ -61,32 +61,32 @@ def get_tickerslice(all_tickers: list) -> list:
     sl_start = wkday * tkrs_per_day
     if wkday == 4:
         # friday just goes to the end
-        return all_tickers[sl_start:]    
+        return all_tickers[sl_start:]
     sl_end = sl_start + tkrs_per_day
     return all_tickers[sl_start: sl_end]
 
 
-def calc_query_days(ticker: str, min_days: int = MIN_DAYS) -> int:
+def calc_query_days(ticker: str, min_days: int = QUERY_DAYS) -> int:
     latest_data = get_ticker_latest(ticker)[0]
     latest, daycount = latest_data['latest'], latest_data['daycount']
 
-    print(f"{ticker}: latest: {latest}, daycount: {daycount}", flush=True)
+    logger.info(f"{ticker}: latest: {latest}, daycount: {daycount}")
 
     if latest is None:
         query_days = min_days
-        print(f"no data, query days = {query_days}", flush=True)
+        logger.info(f"no data, query days = {query_days}")
     else:
         days_since_latest = int((datetime.now().timestamp() - latest)/86400)
-        print(f"days_since: {days_since_latest}", flush=True)
-        if days_since_latest + daycount < min_days or days_since_latest > min_days: 
+        logger.info(f"days_since: {days_since_latest}")
+        if days_since_latest + daycount < min_days or days_since_latest > min_days:
             query_days = min_days
-            print(f"not enough data, days_since = {days_since_latest}, daycount = {daycount}, query days = {query_days}", flush=True)
+            logger.info(f"not enough data, days_since = {days_since_latest}")
         elif days_since_latest == 0:
-            print("Zero days, continuing", flush=True)
+            logger.info(f"days_since: {days_since_latest}, continuing")
             query_days = 0
         else:
             query_days = days_since_latest
-            print(f"recent data, query days = {query_days}", flush=True)
+            logger.info(f"recent data, query days = {query_days}")
     return query_days
 
 
