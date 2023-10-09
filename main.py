@@ -1,14 +1,12 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2_fragments.fastapi import Jinja2Blocks
-import json
 import logging
-from markupsafe import Markup
 from pathlib import Path
 
 from backend import db
@@ -45,7 +43,7 @@ def startup():
 
 
 @app.get("/", status_code=200, response_class=HTMLResponse)
-def root(request: Request, limit: int = 20):
+def root(request: Request, limit: int = 10):
     data = db.get_latest_scores(limit)
     context = {"request": request,
                "data": data,
