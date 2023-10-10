@@ -38,7 +38,11 @@
 				</div>
 				{% endblock %}
 			</div>
+			{% if data|length > 0 %}
 <div class="chart-container" hx-get="/chart_data" hx-trigger="load" hx-vals='{"ticker": "{{ data[0].ticker }}"}'>
+			{% else -%}
+			<div class="chart-container"></div>
+			{% endif %}
 			</div>
 		</div>
 

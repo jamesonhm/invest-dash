@@ -45,6 +45,7 @@ def startup():
 @app.get("/", status_code=200, response_class=HTMLResponse)
 def root(request: Request, limit: int = 10):
     data = db.get_latest_scores(limit)
+    print(data)
     context = {"request": request,
                "data": data,
                "ts_to_str": ts_to_str,

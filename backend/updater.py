@@ -80,9 +80,9 @@ def calc_query_days(ticker: str, min_days: int = QUERY_DAYS) -> int:
         logger.info(f"days_since: {days_since_latest}")
         if days_since_latest + daycount < min_days or days_since_latest > min_days:
             query_days = min_days
-            logger.info(f"not enough data, days_since = {days_since_latest}")
+            logger.info(f"not enough data, query days = {query_days}")
         elif days_since_latest == 0:
-            logger.info(f"days_since: {days_since_latest}, continuing")
+            logger.info("Zero days, continuing")
             query_days = 0
         else:
             query_days = days_since_latest
