@@ -1,6 +1,6 @@
-## Dual Momentum Investing strategy dashboard
+# Dual Momentum Investing strategy dashboard
 
-# Outline
+## Outline
 
 Updater 
 - runs weekdaily on an apscheduler background task
