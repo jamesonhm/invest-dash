@@ -40,7 +40,8 @@ def update():
 
         if query_days < 1:
             continue
-        new_data = get_days_history(ticker, query_days)
+        # dont use current day return as timestamp will be off
+        new_data = get_days_history(ticker, query_days)[:-1]
         update_close_many(new_data)
 
         # calc sroc for ticker and update sroc table

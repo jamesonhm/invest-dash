@@ -72,6 +72,7 @@ def get_history(ticker: str):
                    sroc
               FROM ticker_history
              WHERE ticker = ?
+               AND sroc IS NOT NULL
           ORDER BY timestamp
             """, [ticker]).fetchall()
             return result
@@ -119,17 +120,17 @@ def get_latest_scores(limit: int) -> list[dict]:
               FROM ticker_history
           GROUP BY ticker
           ORDER BY sroc DESC
-             LIMIT ? 
+             LIMIT ?
              """, [limit]).fetchall()
             return result
     except sqlite3.DatabaseError:
         raise
 
 
-def get_ticker_latest(ticker:str) -> list[dict]:
+def get_ticker_latest(ticker: str) -> list[dict]:
     with con:
         result = con.execute("""
-        SELECT max(timestamp) latest,  
+        SELECT max(timestamp) latest,
                 count(timestamp) daycount
             FROM ticker_history
             WHERE ticker = ?
@@ -143,8 +144,8 @@ def update_history(ticker: str, timestamp: int, close: float) -> None:
             INSERT INTO ticker_history (
                         timestamp,
                         ticker,
-                        close) 
-                 VALUES (?, ?, ?) 
+                        close)
+                 VALUES (?, ?, ?)
             ON CONFLICT (timestamp, ticker) DO NOTHING
         """, [timestamp, ticker, close])
         return None
@@ -157,8 +158,8 @@ def update_close_many(data: list[tuple]) -> None:
                 INSERT INTO ticker_history (
                             timestamp,
                             ticker,
-                            close) 
-                     VALUES (?, ?, ?) 
+                            close)
+                     VALUES (?, ?, ?)
                 ON CONFLICT (timestamp, ticker) DO NOTHING
             """, data)
         return None
