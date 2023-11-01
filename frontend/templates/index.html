@@ -11,6 +11,7 @@
 		<title>Dual Momentum</title>
 	</head>
 	<body>
+		<div class="header" style="height:70px"></div>
 		<div>
 			<select hx-get="/" name="limit" hx-target=".table" hx-swap="outerHTML">
 				<option selected value="10">10</option>
@@ -18,8 +19,8 @@
 				<option value="20">20</option>
 			</select>
 		</div>
-		<div class='wrapper'>
-			
+		<div style="height:20px"></div>
+		<div class="wrapper">
 			<div class="table-container">
 				{% block table %}
 				<div class="table">
@@ -39,13 +40,12 @@
 				{% endblock %}
 			</div>
 			{% if data|length > 0 %}
-<div class="chart-container" hx-get="/chart_data" hx-trigger="load" hx-vals='{"ticker": "{{ data[0].ticker }}"}'>
+			<div class="chart-container" hx-get="/chart_data" hx-trigger="load" hx-vals='{"ticker": "{{ data[0].ticker }}"}'>
 			{% else -%}
 			<div class="chart-container"></div>
 			{% endif %}
 			</div>
 		</div>
-
 		<!-- <script src="static/js/history.js" type="text/javascript"></script> -->
 	</body>
 </html>
