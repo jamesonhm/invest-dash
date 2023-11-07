@@ -36,7 +36,7 @@ app.add_middleware(
 def startup():
     scheduler = BackgroundScheduler()
     trigger = CronTrigger(year='*', month='*', day='*',
-                          day_of_week='mon-fri', hour='16',
+                          day_of_week='mon-fri', hour='15',
                           minute='55', timezone="US/Mountain")
     scheduler.add_job(update, trigger=trigger, name="Updater")
     scheduler.start()
