@@ -7,7 +7,7 @@ To run the container, use this docker command as a template;
 docker run \
   -it \
   -v <path/to/appdata>:/invest_dash \
-  jhmarshall/invest_dash:latest
+  jamesonhm/invest_dash:latest
 ```
 
 ## How it Works:
