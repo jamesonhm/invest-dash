@@ -11,7 +11,7 @@ from backend.yfi import get_days_history
 
 
 BASE_PATH = Path(__file__).resolve().cwd()
-TICKER_PATH = BASE_PATH / "top_2300_symbols.csv"
+TICKER_PATH = BASE_PATH / "top_1000_symbols.csv"
 
 EVAL_DAYS = 90
 QUERY_DAYS = int(((90 / 5) * 2) + EVAL_DAYS)
