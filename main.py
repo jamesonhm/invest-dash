@@ -1,7 +1,8 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from fastapi import FastAPI, Request
+import fastapi
+from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -16,7 +17,7 @@ from backend.updater import update
 logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
-app = FastAPI()
+app = fastapi.FastAPI()
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 BASE_PATH = Path(__file__).resolve().parent
 templates = Jinja2Blocks(directory=str(BASE_PATH / "frontend/templates"))
