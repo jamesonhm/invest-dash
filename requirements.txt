@@ -1,4 +1,4 @@
-beautifulsoup4==4.10.0
+#beautifulsoup4==4.10.0
 pytest==7.0.0
 requests==2.22.0
 fastapi[all]
