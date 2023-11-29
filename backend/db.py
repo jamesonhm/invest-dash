@@ -1,7 +1,7 @@
 import sqlite3
 
 
-con = sqlite3.connect("./scraper.db", check_same_thread=False)
+con = sqlite3.connect("./data/scraper.db", check_same_thread=False)
 
 
 def dict_factory(cursor, row):
@@ -197,7 +197,7 @@ if __name__ == "__main__":
     #     assert f"ticker_eod" in [table["name"] for table in tablenames]
     # else:
     #     print("No tables exist")
-    data = get_latest_scores()
+    data = get_latest_scores(10)
     print(data)
     # eods = get_ticker_eods()
     # for d in eods:

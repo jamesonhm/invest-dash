@@ -16,6 +16,6 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-#VOLUME /invest_dash
+VOLUME ["/invest_dash/data"]
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9090"]
