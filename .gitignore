@@ -1,5 +1,5 @@
 .vscode/
-*.db
+#*.db
 scraper.db
 .dockerignore
 .vscode/*
