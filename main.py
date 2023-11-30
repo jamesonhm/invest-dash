@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI):
     scheduler.start()
     yield
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 origins = ["*"]
